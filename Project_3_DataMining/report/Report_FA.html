@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گزارش داده‌کاوی - تشخیص عیوب صفحات فولادی</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #ed8936;
+            --bg: #f7fafc;
+            --text: #2d3748;
+            --card-bg: #ffffff;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 2;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--secondary);
+            font-weight: 300;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), #dd6b20);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            font-size: 1.3em;
+            margin: 25px 0 15px;
+        }
+        
+        p { margin-bottom: 15px; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+            border-right: 5px solid var(--secondary);
+            padding: 20px 25px;
+            border-radius: 15px 0 0 15px;
+            margin: 20px 0;
+        }
+        
+        .algorithm-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .algorithm-card h4 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .result-item {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .result-item .value {
+            font-size: 2.5em;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .result-item .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        
+        tr:hover { background: #f7fafc; }
+        
+        .figure {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .figure img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .figure figcaption {
+            margin-top: 15px;
+            color: #718096;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+        
+        ul, ol { padding-right: 25px; }
+        li { margin-bottom: 8px; }
+        
+        @media print {
+            body { background: white; }
+            section { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔵 گزارش داده‌کاوی</h1>
+            <p class="subtitle">تشخیص عیوب صفحات فولادی - کشف الگو و استخراج دانش</p>
+            <span class="badge">پروژه ۳ - درس داده‌کاوی</span>
+        </header>
+
+        <section>
+            <h2>۱. مقدمه</h2>
+            <p>این پروژه از <strong>تکنیک‌های داده‌کاوی</strong> برای کشف الگوهای پنهان در دیتاست تشخیص عیوب صفحات فولادی استفاده می‌کند. هدف درک ساختار زیربنایی داده از طریق تحلیل اکتشافی، کاهش ابعاد، خوشه‌بندی و تشخیص ناهنجاری است.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 اهداف:</strong>
+                <ul>
+                    <li>انجام تحلیل اکتشافی جامع داده (EDA)</li>
+                    <li>اعمال تکنیک‌های کاهش ابعاد (PCA, t-SNE)</li>
+                    <li>مقایسه الگوریتم‌های خوشه‌بندی (K-Means, سلسله‌مراتبی, DBSCAN)</li>
+                    <li>تشخیص ناهنجاری با Isolation Forest</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>۲. توصیف دیتاست</h2>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">۱,۹۴۱</span>
+                    <span class="label">تعداد نمونه</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۲۷</span>
+                    <span class="label">ویژگی</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۷</span>
+                    <span class="label">کلاس عیب</span>
+                </div>
+            </div>
+            
+            <h3>توزیع انواع عیب</h3>
+            <table>
+                <tr><th>نوع عیب</th><th>تعداد</th><th>درصد</th></tr>
+                <tr><td>سایر عیوب (Other_Faults)</td><td>۶۷۳</td><td>۳۴.۷٪</td></tr>
+                <tr><td>برآمدگی (Bumps)</td><td>۴۰۲</td><td>۲۰.۷٪</td></tr>
+                <tr><td>خراش K (K_Scratch)</td><td>۳۹۱</td><td>۲۰.۱٪</td></tr>
+                <tr><td>خراش Z (Z_Scratch)</td><td>۱۹۰</td><td>۹.۸٪</td></tr>
+                <tr><td>خمیری (Pastry)</td><td>۱۵۸</td><td>۸.۱٪</td></tr>
+                <tr><td>لکه (Stains)</td><td>۷۲</td><td>۳.۷٪</td></tr>
+                <tr><td>کثیفی (Dirtiness)</td><td>۵۵</td><td>۲.۸٪</td></tr>
+            </table>
+            
+            <div class="figure">
+                <img src="../figures/class_distribution.png" alt="توزیع کلاس‌ها">
+                <figcaption>شکل ۱: توزیع انواع عیب در دیتاست</figcaption>
+            </div>
+        </section>
+
+        <section>
+            <h2>۳. تحلیل اکتشافی داده (EDA)</h2>
+            
+            <h3>۳.۱ تحلیل همبستگی</h3>
+            <p>ماتریس همبستگی پیرسون برای شناسایی روابط بین ویژگی‌ها محاسبه شد. همبستگی‌های بالا نشان‌دهنده ویژگی‌های تکراری هستند.</p>
+            
+            <div class="algorithm-card">
+                <h4>📊 روش: همبستگی پیرسون</h4>
+                <p><strong>فرمول:</strong> r = Σ(xi - x̄)(yi - ȳ) / √[Σ(xi - x̄)² × Σ(yi - ȳ)²]</p>
+                <p><strong>چرا؟</strong> همبستگی پیرسون روابط خطی بین متغیرهای پیوسته را اندازه‌گیری می‌کند.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/correlation_heatmap.png" alt="نقشه حرارتی همبستگی">
+                <figcaption>شکل ۲: نقشه حرارتی همبستگی ویژگی‌ها</figcaption>
+            </div>
+            
+            <div class="highlight-box">
+                <strong>یافته‌های کلیدی:</strong>
+                <ul>
+                    <li>همبستگی قوی بین X_Minimum و X_Maximum (ویژگی‌های هندسی)</li>
+                    <li>LogOfAreas با Pixels_Areas همبستگی بالایی دارد</li>
+                    <li>ویژگی‌های روشنایی یک خوشه مجزا تشکیل می‌دهند</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>۴. کاهش ابعاد</h2>
+            
+            <h3>۴.۱ تحلیل مؤلفه‌های اصلی (PCA)</h3>
+            
+            <div class="algorithm-card">
+                <h4>🔬 الگوریتم: PCA</h4>
+                <p><strong>نوع:</strong> کاهش ابعاد خطی</p>
+                <p><strong>نحوه کار:</strong> PCA جهت‌های عمود (مؤلفه‌های اصلی) را پیدا می‌کند که واریانس داده را حداکثر می‌کنند.</p>
+                <p><strong>چرا استفاده کردیم:</strong> PCA سریع، قابل تفسیر و نسبت واریانس توضیح داده شده را ارائه می‌دهد.</p>
+            </div>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">۴۳.۴٪</span>
+                    <span class="label">واریانس توضیح داده شده (۲D)</span>
+                </div>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/pca_2d.png" alt="تجسم PCA">
+                <figcaption>شکل ۳: تصویر دوبعدی PCA از دیتاست</figcaption>
+            </div>
+            
+            <h3>۴.۲ t-SNE</h3>
+            
+            <div class="algorithm-card">
+                <h4>🔬 الگوریتم: t-SNE</h4>
+                <p><strong>نوع:</strong> کاهش ابعاد غیرخطی</p>
+                <p><strong>نحوه کار:</strong> t-SNE فاصله‌های اقلیدسی با ابعاد بالا را به احتمالات شرطی تبدیل می‌کند.</p>
+                <p><strong>پارامترها:</strong> perplexity=30, max_iter=1000</p>
+                <p><strong>چرا استفاده کردیم:</strong> t-SNE در حفظ ساختار محلی و نمایش خوشه‌ها عالی است.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/tsne.png" alt="تجسم t-SNE">
+                <figcaption>شکل ۴: تجسم t-SNE نشان‌دهنده گروه‌بندی طبیعی</figcaption>
+            </div>
+        </section>
+
+        <section>
+            <h2>۵. تحلیل خوشه‌بندی</h2>
+            
+            <h3>۵.۱ روش آرنج برای K بهینه</h3>
+            <div class="figure">
+                <img src="../figures/elbow_plot.png" alt="نمودار آرنج">
+                <figcaption>شکل ۵: نمودار آرنج برای خوشه‌بندی K-Means</figcaption>
+            </div>
+            
+            <h3>۵.۲ خوشه‌بندی K-Means</h3>
+            
+            <div class="algorithm-card">
+                <h4>🎯 الگوریتم: K-Means</h4>
+                <p><strong>نوع:</strong> خوشه‌بندی مبتنی بر مرکز</p>
+                <p><strong>نحوه کار:</strong> به صورت تکراری نقاط را به نزدیک‌ترین مرکز اختصاص می‌دهد و مراکز را به‌روز می‌کند.</p>
+                <p><strong>پارامترها:</strong> n_clusters=7, n_init=10</p>
+                <p><strong>چرا استفاده کردیم:</strong> K-Means ساده، سریع و برای خوشه‌های کروی مناسب است.</p>
+            </div>
+            
+            <h3>۵.۳ خوشه‌بندی سلسله‌مراتبی</h3>
+            
+            <div class="algorithm-card">
+                <h4>🌳 الگوریتم: خوشه‌بندی سلسله‌مراتبی تجمعی</h4>
+                <p><strong>نوع:</strong> خوشه‌بندی پایین به بالا</p>
+                <p><strong>نحوه کار:</strong> با هر نقطه به عنوان یک خوشه شروع می‌کند، سپس نزدیک‌ترین خوشه‌ها را ادغام می‌کند.</p>
+                <p><strong>پیوند:</strong> Ward (حداقل‌سازی واریانس درون خوشه)</p>
+                <p><strong>چرا استفاده کردیم:</strong> دندروگرام‌های قابل تفسیر تولید می‌کند.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/dendrogram.png" alt="دندروگرام">
+                <figcaption>شکل ۶: دندروگرام ساختار سلسله‌مراتبی</figcaption>
+            </div>
+            
+            <h3>۵.۴ DBSCAN</h3>
+            
+            <div class="algorithm-card">
+                <h4>🔍 الگوریتم: DBSCAN</h4>
+                <p><strong>نوع:</strong> خوشه‌بندی مبتنی بر چگالی</p>
+                <p><strong>نحوه کار:</strong> نقاط متراکم را گروه‌بندی می‌کند و نقاط پرت را به عنوان نویز علامت‌گذاری می‌کند.</p>
+                <p><strong>پارامترها:</strong> eps=2.0, min_samples=5</p>
+                <p><strong>چرا استفاده کردیم:</strong> DBSCAN اشکال دلخواه را مدیریت می‌کند و به طور خودکار نقاط پرت را تشخیص می‌دهد.</p>
+            </div>
+            
+            <h3>۵.۵ مقایسه نتایج خوشه‌بندی</h3>
+            
+            <table>
+                <tr>
+                    <th>روش</th>
+                    <th>امتیاز Silhouette</th>
+                    <th>ARI</th>
+                    <th>NMI</th>
+                </tr>
+                <tr>
+                    <td><strong>K-Means</strong></td>
+                    <td>۰.۱۹۷</td>
+                    <td>۰.۲۰۲</td>
+                    <td>۰.۲۹۰</td>
+                </tr>
+                <tr>
+                    <td>سلسله‌مراتبی</td>
+                    <td>۰.۱۸۵</td>
+                    <td>۰.۱۵۳</td>
+                    <td>۰.۳۱۰</td>
+                </tr>
+            </table>
+            
+            <div class="figure">
+                <img src="../figures/clustering_comparison.png" alt="مقایسه خوشه‌بندی">
+                <figcaption>شکل ۷: مقایسه تصویری نتایج خوشه‌بندی</figcaption>
+            </div>
+            
+            <div class="highlight-box">
+                <strong>📊 معیارهای ارزیابی:</strong>
+                <ul>
+                    <li><strong>امتیاز Silhouette:</strong> شباهت نقاط به خوشه خود در مقابل سایر خوشه‌ها (-۱ تا ۱، بالاتر بهتر)</li>
+                    <li><strong>ARI:</strong> توافق بین خوشه‌بندی و برچسب‌های واقعی (-۱ تا ۱)</li>
+                    <li><strong>NMI:</strong> اطلاعات مشترک بین خوشه‌بندی و برچسب‌ها (۰ تا ۱)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>۶. تشخیص ناهنجاری</h2>
+            
+            <div class="algorithm-card">
+                <h4>🚨 الگوریتم: Isolation Forest</h4>
+                <p><strong>نوع:</strong> تشخیص ناهنجاری مبتنی بر درخت</p>
+                <p><strong>نحوه کار:</strong> درخت‌های تصادفی می‌سازد و ناهنجاری‌ها را جدا می‌کند (به تقسیم‌های کمتری نیاز دارند).</p>
+                <p><strong>پارامترها:</strong> contamination=0.10</p>
+                <p><strong>چرا استفاده کردیم:</strong> Isolation Forest کارآمد است و ابعاد بالا را به خوبی مدیریت می‌کند.</p>
+            </div>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">۱۹۴</span>
+                    <span class="label">ناهنجاری تشخیص داده شده</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۱۰٪</span>
+                    <span class="label">نرخ آلودگی</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>۷. نتیجه‌گیری</h2>
+            
+            <div class="highlight-box">
+                <strong>🎯 یافته‌های کلیدی:</strong>
+                <ol>
+                    <li><strong>کلاس‌های نامتوازن:</strong> Other_Faults غالب است (۳۴.۷٪)، در حالی که Dirtiness نادر است (۲.۸٪)</li>
+                    <li><strong>همبستگی ویژگی‌ها:</strong> همبستگی‌های قوی بین ویژگی‌های هندسی و روشنایی وجود دارد</li>
+                    <li><strong>محدودیت PCA:</strong> فقط ۴۳.۴٪ واریانس در ۲D توضیح داده شد</li>
+                    <li><strong>چالش خوشه‌بندی:</strong> امتیازات پایین silhouette نشان‌دهنده خوشه‌های همپوشان است</li>
+                    <li><strong>بهترین روش:</strong> K-Means با بالاترین ARI (۰.۲۰۲)</li>
+                </ol>
+            </div>
+            
+            <h3>پیشنهادات</h3>
+            <ul>
+                <li>مهندسی ویژگی برای ایجاد نمایش‌های قابل تفکیک‌تر</li>
+                <li>استفاده از SMOTE برای رفع عدم توازن کلاس</li>
+                <li>بررسی ۱۹۴ ناهنجاری تشخیص داده شده برای مسائل کیفیت داده</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>۸. مراجع</h2>
+            <ul>
+                <li>UCI Machine Learning Repository - Steel Plates Faults Dataset</li>
+                <li>Scikit-learn Documentation (https://scikit-learn.org/)</li>
+                <li>van der Maaten, L., & Hinton, G. (2008). Visualizing Data using t-SNE</li>
+                <li>Liu, F. T., Ting, K. M., & Zhou, Z. H. (2008). Isolation Forest</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>پروژه داده‌کاوی - کارشناسی ارشد</p>
+            <p>آذر ۱۴۰۳</p>
+        </footer>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Report - Steel Plates Fault Detection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        
+        :root {
+            --primary: #065f46;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg: #f0fdf4;
+            --text: #1f2937;
+            --card-bg: #ffffff;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .subtitle { font-size: 1.3em; color: var(--secondary); font-weight: 300; }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        h3 { color: var(--secondary); font-size: 1.3em; margin: 25px 0 15px; }
+        
+        p { margin-bottom: 15px; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 5px solid var(--secondary);
+            padding: 20px 25px;
+            border-radius: 0 15px 15px 0;
+            margin: 20px 0;
+        }
+        
+        .algorithm-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .algorithm-card h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.2em; }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .result-item {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .result-item .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .result-item .label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: var(--primary); color: white; }
+        tr:hover { background: #f0fdf4; }
+        
+        .figure { text-align: center; margin: 30px 0; }
+        .figure img { max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #718096; font-style: italic; }
+        
+        .winner { background: #fef3c7 !important; font-weight: bold; }
+        
+        footer { text-align: center; padding: 40px; color: white; }
+        
+        @media print { body { background: white; } section { box-shadow: none; border: 1px solid #ddd; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🟢 Machine Learning Report</h1>
+            <p class="subtitle">Steel Plates Fault Detection - Multi-class Classification</p>
+            <span class="badge">Project 2 - Machine Learning & Pattern Recognition</span>
+        </header>
+
+        <section>
+            <h2>1. Introduction</h2>
+            <p>This project applies <strong>machine learning classification algorithms</strong> to automatically detect and classify steel plate surface faults. The goal is to compare multiple algorithms and identify the best performing model for this multi-class classification problem.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 Objectives:</strong>
+                <ul>
+                    <li>Implement and compare 10 classification algorithms</li>
+                    <li>Evaluate using multiple metrics (Accuracy, F1, ROC-AUC)</li>
+                    <li>Analyze feature importance</li>
+                    <li>Provide recommendations for industrial deployment</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Dataset & Preprocessing</h2>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">1,941</span>
+                    <span class="label">Total Samples</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">27</span>
+                    <span class="label">Features</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">7</span>
+                    <span class="label">Classes</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">80/20</span>
+                    <span class="label">Train/Test Split</span>
+                </div>
+            </div>
+            
+            <h3>2.1 Preprocessing Steps</h3>
+            
+            <div class="algorithm-card">
+                <h4>📊 StandardScaler Normalization</h4>
+                <p><strong>Formula:</strong> z = (x - μ) / σ</p>
+                <p><strong>Why?</strong> Many algorithms (SVM, KNN, Neural Networks) are sensitive to feature scales. Without normalization, features with larger values dominate the learning process.</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🔀 Train/Test Split (80/20)</h4>
+                <p><strong>Stratified:</strong> Yes - maintains class distribution in both sets</p>
+                <p><strong>Why?</strong> Ensures fair evaluation on unseen data while preserving the imbalanced class distribution.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Classification Algorithms</h2>
+            
+            <h3>3.1 Linear Models</h3>
+            
+            <div class="algorithm-card">
+                <h4>📈 Logistic Regression</h4>
+                <p><strong>Type:</strong> Linear, Probabilistic</p>
+                <p><strong>How it works:</strong> Fits a sigmoid function to predict class probabilities using maximum likelihood estimation.</p>
+                <p><strong>Advantages:</strong> Fast, interpretable, probabilistic outputs</p>
+                <p><strong>Why we used it:</strong> Serves as a baseline for linear separability</p>
+            </div>
+            
+            <h3>3.2 Instance-Based Methods</h3>
+            
+            <div class="algorithm-card">
+                <h4>🎯 K-Nearest Neighbors (KNN)</h4>
+                <p><strong>Type:</strong> Instance-based, Non-parametric</p>
+                <p><strong>Parameters:</strong> k=5, k=10</p>
+                <p><strong>How it works:</strong> Classifies based on majority vote of k nearest neighbors in feature space.</p>
+                <p><strong>Why we used it:</strong> Simple, effective for local patterns, no training required</p>
+            </div>
+            
+            <h3>3.3 Tree-Based Methods</h3>
+            
+            <div class="algorithm-card">
+                <h4>🌳 Decision Tree</h4>
+                <p><strong>Type:</strong> Tree-based, Rule-based</p>
+                <p><strong>Criterion:</strong> Gini impurity</p>
+                <p><strong>How it works:</strong> Recursively splits data based on feature thresholds that maximize information gain.</p>
+                <p><strong>Why we used it:</strong> Highly interpretable, handles non-linear relationships</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🌲 Random Forest</h4>
+                <p><strong>Type:</strong> Ensemble of decision trees</p>
+                <p><strong>Parameters:</strong> n_estimators=100</p>
+                <p><strong>How it works:</strong> Trains multiple trees on bootstrapped samples with random feature subsets, then averages predictions.</p>
+                <p><strong>Why we used it:</strong> Reduces overfitting, provides feature importance, robust</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🚀 Gradient Boosting & XGBoost</h4>
+                <p><strong>Type:</strong> Sequential ensemble</p>
+                <p><strong>How it works:</strong> Trains trees sequentially, each correcting errors of previous ones.</p>
+                <p><strong>XGBoost advantages:</strong> Regularization, parallelization, handling missing values</p>
+                <p><strong>Why we used it:</strong> State-of-the-art for tabular data, often wins competitions</p>
+            </div>
+            
+            <h3>3.4 Support Vector Machines</h3>
+            
+            <div class="algorithm-card">
+                <h4>⚡ SVM (RBF & Linear)</h4>
+                <p><strong>Type:</strong> Maximum margin classifier</p>
+                <p><strong>Kernels:</strong> RBF (non-linear), Linear</p>
+                <p><strong>How it works:</strong> Finds hyperplane that maximizes margin between classes. RBF kernel maps to infinite-dimensional space.</p>
+                <p><strong>Why we used it:</strong> Effective in high-dimensional spaces, kernel trick for non-linear boundaries</p>
+            </div>
+            
+            <h3>3.5 Neural Networks</h3>
+            
+            <div class="algorithm-card">
+                <h4>🧠 Multi-Layer Perceptron (MLP)</h4>
+                <p><strong>Type:</strong> Feedforward neural network</p>
+                <p><strong>Architecture:</strong> Hidden layer with 100 neurons</p>
+                <p><strong>How it works:</strong> Learns hierarchical representations through backpropagation.</p>
+                <p><strong>Why we used it:</strong> Can learn complex non-linear patterns</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Results</h2>
+            
+            <h3>4.1 Model Comparison</h3>
+            
+            <table>
+                <tr>
+                    <th>Model</th>
+                    <th>Accuracy</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                    <th>ROC-AUC</th>
+                </tr>
+                <tr class="winner">
+                    <td>🏆 XGBoost</td>
+                    <td>80.2%</td>
+                    <td>80.9%</td>
+                    <td>80.2%</td>
+                    <td>80.3%</td>
+                    <td>94.4%</td>
+                </tr>
+                <tr class="winner">
+                    <td>🥈 Random Forest</td>
+                    <td>80.2%</td>
+                    <td>80.9%</td>
+                    <td>80.2%</td>
+                    <td>80.2%</td>
+                    <td>94.2%</td>
+                </tr>
+                <tr>
+                    <td>Gradient Boosting</td>
+                    <td>79.2%</td>
+                    <td>80.1%</td>
+                    <td>79.2%</td>
+                    <td>79.4%</td>
+                    <td>94.5%</td>
+                </tr>
+                <tr>
+                    <td>Neural Network</td>
+                    <td>78.4%</td>
+                    <td>78.8%</td>
+                    <td>78.4%</td>
+                    <td>78.5%</td>
+                    <td>92.3%</td>
+                </tr>
+                <tr>
+                    <td>SVM (RBF)</td>
+                    <td>75.1%</td>
+                    <td>75.8%</td>
+                    <td>75.1%</td>
+                    <td>75.2%</td>
+                    <td>92.0%</td>
+                </tr>
+                <tr>
+                    <td>Decision Tree</td>
+                    <td>74.6%</td>
+                    <td>74.9%</td>
+                    <td>74.6%</td>
+                    <td>74.5%</td>
+                    <td>83.1%</td>
+                </tr>
+                <tr>
+                    <td>SVM (Linear)</td>
+                    <td>73.3%</td>
+                    <td>73.4%</td>
+                    <td>73.3%</td>
+                    <td>73.3%</td>
+                    <td>90.9%</td>
+                </tr>
+                <tr>
+                    <td>Logistic Regression</td>
+                    <td>72.8%</td>
+                    <td>73.3%</td>
+                    <td>72.8%</td>
+                    <td>72.8%</td>
+                    <td>90.7%</td>
+                </tr>
+                <tr>
+                    <td>KNN (k=5)</td>
+                    <td>72.8%</td>
+                    <td>73.2%</td>
+                    <td>72.8%</td>
+                    <td>72.4%</td>
+                    <td>89.4%</td>
+                </tr>
+                <tr>
+                    <td>KNN (k=10)</td>
+                    <td>71.2%</td>
+                    <td>71.3%</td>
+                    <td>71.2%</td>
+                    <td>70.8%</td>
+                    <td>90.2%</td>
+                </tr>
+            </table>
+            
+            <div class="figure">
+                <img src="../figures/model_comparison_accuracy.png" alt="Model Comparison">
+                <figcaption>Figure 1: Accuracy comparison across all models</figcaption>
+            </div>
+            
+            <h3>4.2 Best Model: XGBoost Analysis</h3>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">80.2%</span>
+                    <span class="label">Accuracy</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">80.3%</span>
+                    <span class="label">F1-Score</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">94.4%</span>
+                    <span class="label">ROC-AUC</span>
+                </div>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/confusion_matrix.png" alt="Confusion Matrix">
+                <figcaption>Figure 2: Confusion matrix for XGBoost classifier</figcaption>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/roc_curves.png" alt="ROC Curves">
+                <figcaption>Figure 3: ROC curves for all classes</figcaption>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Feature Importance</h2>
+            
+            <div class="figure">
+                <img src="../figures/feature_importance.png" alt="Feature Importance">
+                <figcaption>Figure 4: Top features by importance (XGBoost)</figcaption>
+            </div>
+            
+            <div class="highlight-box">
+                <strong>🔝 Top 5 Most Important Features:</strong>
+                <ol>
+                    <li><strong>LogOfAreas</strong> (7.3%) - Logarithm of fault area</li>
+                    <li><strong>Length_of_Conveyer</strong> (6.1%) - Steel plate position</li>
+                    <li><strong>Pixels_Areas</strong> (5.7%) - Fault size in pixels</li>
+                    <li><strong>Log_X_Index</strong> (5.0%) - Logarithmic X position</li>
+                    <li><strong>Outside_X_Index</strong> (4.7%) - External X position</li>
+                </ol>
+            </div>
+            
+            <p><strong>Interpretation:</strong> Geometric features (area, position) are most discriminative for fault classification. This aligns with industrial knowledge that different faults have characteristic shapes and locations.</p>
+        </section>
+
+        <section>
+            <h2>6. Per-Class Performance</h2>
+            
+            <table>
+                <tr>
+                    <th>Class</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                    <th>Support</th>
+                </tr>
+                <tr>
+                    <td>K_Scratch</td>
+                    <td>99%</td>
+                    <td>94%</td>
+                    <td>96%</td>
+                    <td>78</td>
+                </tr>
+                <tr>
+                    <td>Z_Scratch</td>
+                    <td>100%</td>
+                    <td>95%</td>
+                    <td>97%</td>
+                    <td>38</td>
+                </tr>
+                <tr>
+                    <td>Stains</td>
+                    <td>92%</td>
+                    <td>86%</td>
+                    <td>89%</td>
+                    <td>14</td>
+                </tr>
+                <tr>
+                    <td>Dirtiness</td>
+                    <td>90%</td>
+                    <td>82%</td>
+                    <td>86%</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>Other_Faults</td>
+                    <td>72%</td>
+                    <td>81%</td>
+                    <td>77%</td>
+                    <td>135</td>
+                </tr>
+                <tr>
+                    <td>Bumps</td>
+                    <td>76%</td>
+                    <td>67%</td>
+                    <td>71%</td>
+                    <td>81</td>
+                </tr>
+                <tr>
+                    <td>Pastry</td>
+                    <td>55%</td>
+                    <td>56%</td>
+                    <td>55%</td>
+                    <td>32</td>
+                </tr>
+            </table>
+            
+            <div class="highlight-box">
+                <strong>📊 Key Observations:</strong>
+                <ul>
+                    <li><strong>Best performing:</strong> Z_Scratch (97% F1) and K_Scratch (96% F1) - distinctive visual patterns</li>
+                    <li><strong>Worst performing:</strong> Pastry (55% F1) - often confused with Other_Faults</li>
+                    <li><strong>Imbalance effect:</strong> Rare classes (Dirtiness, Stains) still achieve good performance</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>7. Conclusions</h2>
+            
+            <div class="highlight-box">
+                <strong>🎯 Key Findings:</strong>
+                <ol>
+                    <li><strong>Best Model:</strong> XGBoost achieved 80.2% accuracy and 94.4% ROC-AUC</li>
+                    <li><strong>Ensemble superiority:</strong> Tree-based ensembles (XGBoost, Random Forest) outperform single models</li>
+                    <li><strong>Feature importance:</strong> Geometric features are most discriminative</li>
+                    <li><strong>Class variability:</strong> Scratch faults are easy to detect; Pastry is challenging</li>
+                    <li><strong>Industrial readiness:</strong> 80% accuracy is suitable for assisted decision-making</li>
+                </ol>
+            </div>
+            
+            <h3>Recommendations</h3>
+            <ul>
+                <li>Deploy XGBoost model for production with human oversight</li>
+                <li>Collect more Pastry examples to improve its detection</li>
+                <li>Consider cost-sensitive learning if certain faults are more critical</li>
+                <li>Implement confidence thresholds for uncertain predictions</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>8. References</h2>
+            <ul>
+                <li>Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System</li>
+                <li>Breiman, L. (2001). Random Forests. Machine Learning, 45(1), 5-32</li>
+                <li>Scikit-learn Documentation (https://scikit-learn.org/)</li>
+                <li>UCI Machine Learning Repository - Steel Plates Faults Dataset</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Machine Learning & Pattern Recognition Project - Master's Degree</p>
+            <p>December 2024</p>
+        </footer>
+    </div>
+</body>
+</html>
+

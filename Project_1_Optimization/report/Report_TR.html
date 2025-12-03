@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizasyon Raporu - Çelik Levha Hata Tespiti</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        :root { --primary: #7c2d12; --secondary: #ea580c; --accent: #fbbf24; --card-bg: #ffffff; --text: #1f2937; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', sans-serif; background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); min-height: 100vh; color: var(--text); line-height: 1.8; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        header { background: var(--card-bg); border-radius: 20px; padding: 60px 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.8em; color: var(--primary); margin-bottom: 15px; }
+        .subtitle { font-size: 1.3em; color: var(--secondary); font-weight: 300; }
+        .badge { display: inline-block; background: linear-gradient(135deg, var(--secondary), #c2410c); color: white; padding: 8px 20px; border-radius: 25px; margin-top: 20px; font-weight: 600; }
+        section { background: var(--card-bg); border-radius: 20px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        h2 { font-family: 'Playfair Display', serif; color: var(--primary); font-size: 1.8em; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid var(--secondary); }
+        h3 { color: var(--secondary); font-size: 1.3em; margin: 25px 0 15px; }
+        p { margin-bottom: 15px; }
+        .highlight-box { background: linear-gradient(135deg, #fff7ed, #ffedd5); border-left: 5px solid var(--secondary); padding: 20px 25px; border-radius: 0 15px 15px 0; margin: 20px 0; }
+        .algorithm-card { background: #f8f9fa; border-radius: 15px; padding: 25px; margin: 15px 0; border: 1px solid #e2e8f0; }
+        .algorithm-card h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.2em; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 25px 0; }
+        .result-item { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px; border-radius: 15px; text-align: center; }
+        .result-item .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .result-item .label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: var(--primary); color: white; }
+        tr:hover { background: #fff7ed; }
+        .figure { text-align: center; margin: 30px 0; }
+        .figure img { max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #718096; font-style: italic; }
+        .winner { background: #fef3c7 !important; font-weight: bold; }
+        footer { text-align: center; padding: 40px; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔴 Optimizasyon Raporu</h1>
+            <p class="subtitle">Çelik Levha Hata Tespiti - Hiperparametre Optimizasyonu</p>
+            <span class="badge">Proje 1 - Optimizasyon Dersi</span>
+        </header>
+
+        <section>
+            <h2>1. Giriş</h2>
+            <p>Bu proje, makine öğrenmesi modelleri için <strong>hiperparametre optimizasyon algoritmalarını</strong> karşılaştırır. Amaç, Grid Search, Random Search ve Bayesian Optimization yöntemlerinin etkinliğini ve verimliliğini değerlendirmektir.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 Hedefler:</strong>
+                <ul>
+                    <li>3 optimizasyon algoritmasını karşılaştırma (Grid, Random, Bayesian)</li>
+                    <li>3 makine öğrenmesi modeli üzerinde test etme (SVM, RF, NN)</li>
+                    <li>Doğruluk ve hesaplama süresi açısından performans analizi</li>
+                    <li>En iyi optimizasyon stratejisi için öneriler</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Optimizasyon Algoritmaları</h2>
+            
+            <h3>2.1 Grid Search (Izgara Araması)</h3>
+            <div class="algorithm-card">
+                <h4>📊 Algoritma: Grid Search</h4>
+                <p><strong>Tür:</strong> Kapsamlı arama</p>
+                <p><strong>Nasıl çalışır:</strong> Tüm olası parametre kombinasyonlarını sistematik olarak dener. Her kombinasyonu çapraz doğrulama ile değerlendirir.</p>
+                <p><strong>Avantajlar:</strong> Arama uzayında global optimumu bulma garantisi</p>
+                <p><strong>Dezavantajlar:</strong> Parametre sayısı arttıkça üssel olarak yavaşlar (boyut laneti)</p>
+            </div>
+            
+            <h3>2.2 Random Search (Rastgele Arama)</h3>
+            <div class="algorithm-card">
+                <h4>🎲 Algoritma: Random Search</h4>
+                <p><strong>Tür:</strong> Stokastik arama</p>
+                <p><strong>Nasıl çalışır:</strong> Parametre uzayından rastgele noktalar örnekler. Belirlenen iterasyon sayısı kadar dener.</p>
+                <p><strong>Avantajlar:</strong> Grid Search'ten çok daha hızlı, yüksek boyutlu uzaylarda etkili</p>
+                <p><strong>Dezavantajlar:</strong> Optimumu bulma garantisi yok</p>
+                <p><strong>Referans:</strong> Bergstra & Bengio (2012) - "Random Search for Hyper-Parameter Optimization"</p>
+            </div>
+            
+            <h3>2.3 Bayesian Optimization (Optuna)</h3>
+            <div class="algorithm-card">
+                <h4>🧠 Algoritma: Bayesian Optimization</h4>
+                <p><strong>Tür:</strong> Model tabanlı arama</p>
+                <p><strong>Nasıl çalışır:</strong> Geçmiş değerlendirmelerden öğrenir, Gaussian Process veya Tree-structured Parzen Estimator (TPE) kullanarak bir vekil model oluşturur. Bir sonraki deneme noktasını akıllıca seçer.</p>
+                <p><strong>Avantajlar:</strong> Örneklem verimli, az denemeyle iyi sonuçlar</p>
+                <p><strong>Dezavantajlar:</strong> Hesaplama yükü daha yüksek</p>
+                <p><strong>Kullanılan kütüphane:</strong> Optuna (TPE algoritması)</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Hedef Modeller ve Parametre Uzayları</h2>
+            
+            <h3>3.1 Support Vector Machine (SVM)</h3>
+            <div class="algorithm-card">
+                <h4>⚡ Parametre Uzayı:</h4>
+                <ul>
+                    <li><strong>C:</strong> [0.1, 1, 10, 100] - Düzenlileştirme parametresi</li>
+                    <li><strong>gamma:</strong> ['scale', 0.01, 0.1, 1] - Çekirdek katsayısı</li>
+                    <li><strong>kernel:</strong> ['rbf', 'linear', 'poly'] - Çekirdek türü</li>
+                </ul>
+                <p><strong>Toplam Grid kombinasyonu:</strong> 4 × 4 × 3 = 48</p>
+            </div>
+            
+            <h3>3.2 Random Forest</h3>
+            <div class="algorithm-card">
+                <h4>🌲 Parametre Uzayı:</h4>
+                <ul>
+                    <li><strong>n_estimators:</strong> [50, 100, 200] - Ağaç sayısı</li>
+                    <li><strong>max_depth:</strong> [5, 10, 20, None] - Maksimum derinlik</li>
+                    <li><strong>min_samples_split:</strong> [2, 5, 10] - Bölme için minimum örnek</li>
+                </ul>
+                <p><strong>Toplam Grid kombinasyonu:</strong> 3 × 4 × 3 = 36</p>
+            </div>
+            
+            <h3>3.3 Neural Network (MLP)</h3>
+            <div class="algorithm-card">
+                <h4>🧠 Parametre Uzayı:</h4>
+                <ul>
+                    <li><strong>hidden_layer_sizes:</strong> [(50,), (100,), (100,50)] - Gizli katman yapısı</li>
+                    <li><strong>alpha:</strong> [0.0001, 0.001, 0.01] - L2 düzenlileştirme</li>
+                    <li><strong>learning_rate:</strong> ['constant', 'adaptive'] - Öğrenme oranı</li>
+                </ul>
+                <p><strong>Toplam Grid kombinasyonu:</strong> 3 × 3 × 2 = 18</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Sonuçlar</h2>
+            
+            <h3>4.1 Model Bazında Karşılaştırma</h3>
+            
+            <table>
+                <tr>
+                    <th>Model</th>
+                    <th>Yöntem</th>
+                    <th>En İyi Skor</th>
+                    <th>Süre (s)</th>
+                </tr>
+                <tr>
+                    <td rowspan="3">SVM</td>
+                    <td>Grid Search</td>
+                    <td>76.3%</td>
+                    <td>16.2</td>
+                </tr>
+                <tr>
+                    <td>Random Search</td>
+                    <td>76.3%</td>
+                    <td>8.3</td>
+                </tr>
+                <tr class="winner">
+                    <td>Bayesian (Optuna)</td>
+                    <td><strong>77.2%</strong></td>
+                    <td>44.1</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Random Forest</td>
+                    <td>Grid Search</td>
+                    <td>78.0%</td>
+                    <td>12.3</td>
+                </tr>
+                <tr>
+                    <td>Random Search</td>
+                    <td>78.0%</td>
+                    <td>9.7</td>
+                </tr>
+                <tr class="winner">
+                    <td>Bayesian (Optuna)</td>
+                    <td><strong>78.3%</strong></td>
+                    <td>78.9</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Neural Network</td>
+                    <td>Grid Search</td>
+                    <td>76.2%</td>
+                    <td>43.5</td>
+                </tr>
+                <tr>
+                    <td>Random Search</td>
+                    <td>76.2%</td>
+                    <td>43.1</td>
+                </tr>
+                <tr class="winner">
+                    <td>Bayesian (Optuna)</td>
+                    <td><strong>76.6%</strong></td>
+                    <td>395.4</td>
+                </tr>
+            </table>
+            
+            <div class="figure">
+                <img src="../figures/optimization_comparison_RandomForest.png" alt="Random Forest Optimizasyonu">
+                <figcaption>Şekil 1: Random Forest için optimizasyon yöntemlerinin karşılaştırması</figcaption>
+            </div>
+            
+            <h3>4.2 Genel Özet</h3>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">78.3%</span>
+                    <span class="label">En İyi Skor (RF + Bayesian)</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">+0.9%</span>
+                    <span class="label">Bayesian İyileştirmesi</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">~2x</span>
+                    <span class="label">Random vs Grid Hız Avantajı</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Analiz ve Tartışma</h2>
+            
+            <div class="highlight-box">
+                <strong>📊 Önemli Bulgular:</strong>
+                <ol>
+                    <li><strong>Bayesian her zaman en iyi skoru buldu:</strong> Grid ve Random Search'ten tutarlı olarak daha iyi performans gösterdi (~0.3-0.9% iyileştirme)</li>
+                    <li><strong>Random Search şaşırtıcı derecede etkili:</strong> Grid Search ile aynı skoru yarı sürede buldu</li>
+                    <li><strong>Hesaplama maliyeti trade-off:</strong> Bayesian daha iyi sonuç veriyor ama 3-10x daha yavaş</li>
+                    <li><strong>Model karmaşıklığı etkisi:</strong> Sinir ağları için optimizasyon çok daha uzun sürdü</li>
+                </ol>
+            </div>
+            
+            <h3>5.1 Yöntem Karşılaştırması</h3>
+            
+            <table>
+                <tr>
+                    <th>Özellik</th>
+                    <th>Grid Search</th>
+                    <th>Random Search</th>
+                    <th>Bayesian</th>
+                </tr>
+                <tr>
+                    <td>Optimallik garantisi</td>
+                    <td>✅ Evet (grid içinde)</td>
+                    <td>❌ Hayır</td>
+                    <td>❌ Hayır</td>
+                </tr>
+                <tr>
+                    <td>Ölçeklenebilirlik</td>
+                    <td>❌ Kötü</td>
+                    <td>✅ İyi</td>
+                    <td>✅ İyi</td>
+                </tr>
+                <tr>
+                    <td>Örneklem verimliliği</td>
+                    <td>❌ Düşük</td>
+                    <td>⚠️ Orta</td>
+                    <td>✅ Yüksek</td>
+                </tr>
+                <tr>
+                    <td>Uygulama kolaylığı</td>
+                    <td>✅ Kolay</td>
+                    <td>✅ Kolay</td>
+                    <td>⚠️ Orta</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>6. Sonuçlar ve Öneriler</h2>
+            
+            <div class="highlight-box">
+                <strong>🎯 Sonuçlar:</strong>
+                <ol>
+                    <li><strong>En iyi yöntem:</strong> Bayesian Optimization (Optuna) en yüksek doğruluğu elde etti</li>
+                    <li><strong>En iyi model:</strong> Random Forest + Bayesian = %78.3 doğruluk</li>
+                    <li><strong>Pratik seçim:</strong> Random Search hız/performans dengesi için iyi bir seçenek</li>
+                </ol>
+            </div>
+            
+            <h3>Öneriler</h3>
+            <ul>
+                <li><strong>Sınırlı kaynak:</strong> Random Search kullanın - hızlı ve etkili</li>
+                <li><strong>Kritik uygulamalar:</strong> Bayesian Optimization kullanın - en iyi sonuç</li>
+                <li><strong>Başlangıç aşaması:</strong> Grid Search küçük uzaylarda kullanın - yorumlanabilir</li>
+                <li><strong>Büyük parametre uzayları:</strong> Grid Search'ten kaçının - üssel maliyet</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>7. Kaynaklar</h2>
+            <ul>
+                <li>Bergstra, J., & Bengio, Y. (2012). Random search for hyper-parameter optimization. JMLR</li>
+                <li>Akiba, T., et al. (2019). Optuna: A Next-generation Hyperparameter Optimization Framework</li>
+                <li>Snoek, J., et al. (2012). Practical Bayesian Optimization of Machine Learning Algorithms</li>
+                <li>Scikit-learn Documentation (https://scikit-learn.org/)</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Optimizasyon Projesi - Yüksek Lisans</p>
+            <p>Aralık 2024</p>
+        </footer>
+    </div>
+</body>
+</html>
+

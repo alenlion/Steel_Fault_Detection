@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizasyon Sunumu - Çelik Levha Hata Tespiti</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        :root { --primary: #7c2d12; --secondary: #ea580c; --accent: #fbbf24; --bg: #451a03; --text: #f1f5f9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--primary); color: var(--text); overflow: hidden; }
+        .slide { width: 100vw; height: 100vh; display: none; padding: 60px; position: relative; background: linear-gradient(135deg, var(--primary) 0%, var(--bg) 100%); }
+        .slide.active { display: flex; flex-direction: column; }
+        .slide-number { position: absolute; bottom: 30px; right: 40px; font-size: 1em; opacity: 0.5; }
+        .title-slide { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 4em; background: linear-gradient(90deg, var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .title-slide .subtitle { font-size: 1.8em; font-weight: 300; opacity: 0.8; }
+        .title-slide .badge { margin-top: 40px; background: var(--secondary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 600; }
+        h2 { font-size: 2.5em; margin-bottom: 40px; color: var(--secondary); }
+        .content { flex: 1; display: flex; gap: 40px; } .column { flex: 1; }
+        .card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .card h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3em; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin: 30px 0; }
+        .stat-item { background: linear-gradient(135deg, var(--secondary), #c2410c); border-radius: 20px; padding: 40px; text-align: center; }
+        .stat-item .value { font-size: 3em; font-weight: 700; } .stat-item .label { font-size: 1em; opacity: 0.9; margin-top: 10px; }
+        ul { padding-left: 25px; } li { margin-bottom: 15px; font-size: 1.2em; line-height: 1.6; }
+        .image-container { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .image-container img { max-width: 100%; max-height: 60vh; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; } th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); } th { background: var(--secondary); }
+        .highlight { background: linear-gradient(90deg, var(--accent), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+        .winner { background: rgba(251, 191, 36, 0.2) !important; }
+        .algo-box { display: flex; gap: 20px; margin: 20px 0; }
+        .algo-item { flex: 1; background: rgba(234, 88, 12, 0.2); border: 2px solid var(--secondary); border-radius: 15px; padding: 25px; text-align: center; }
+        .algo-item h4 { color: var(--accent); font-size: 1.3em; margin-bottom: 10px; }
+        .controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 100; }
+        .controls button { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 1em; transition: all 0.3s; }
+        .controls button:hover { background: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="slide title-slide active">
+        <h1>🔴 Optimizasyon</h1>
+        <p class="subtitle">Çelik Levha Hata Tespiti</p>
+        <p class="subtitle">Hiperparametre Optimizasyonu Karşılaştırması</p>
+        <div class="badge">Proje 1 - Optimizasyon Dersi</div>
+        <span class="slide-number">1 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>🎯 Proje Hedefleri</h2>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Hedefler</h3>
+                    <ul>
+                        <li><span class="highlight">3 optimizasyon algoritması</span> karşılaştırma</li>
+                        <li>3 ML modeli üzerinde test etme</li>
+                        <li>Doğruluk ve süre analizi</li>
+                        <li>En iyi strateji önerileri</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Neden Önemli?</h3>
+                    <ul>
+                        <li>Hiperparametreler model performansını belirler</li>
+                        <li>Manuel ayarlama zaman kaybı</li>
+                        <li>Otomatik optimizasyon kritik</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">2 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>🔍 Optimizasyon Algoritmaları</h2>
+        <div class="algo-box">
+            <div class="algo-item">
+                <h4>Grid Search</h4>
+                <p>📊 Kapsamlı</p>
+                <p>Tüm kombinasyonlar</p>
+                <p>Garantili optimum</p>
+                <p style="color: #ef4444;">❌ Çok yavaş</p>
+            </div>
+            <div class="algo-item">
+                <h4>Random Search</h4>
+                <p>🎲 Stokastik</p>
+                <p>Rastgele örnekleme</p>
+                <p>Hızlı</p>
+                <p style="color: #f59e0b;">⚠️ Garanti yok</p>
+            </div>
+            <div class="algo-item" style="background: rgba(251, 191, 36, 0.3); border-color: var(--accent);">
+                <h4>Bayesian (Optuna)</h4>
+                <p>🧠 Akıllı</p>
+                <p>Geçmişten öğrenir</p>
+                <p>Verimli</p>
+                <p style="color: #10b981;">✅ En iyi sonuç</p>
+            </div>
+        </div>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Bayesian Nasıl Çalışır?</h3>
+                    <ul>
+                        <li>Her denemeden sonra bir <span class="highlight">vekil model</span> günceller</li>
+                        <li>Bir sonraki noktayı <span class="highlight">akıllıca</span> seçer</li>
+                        <li>Keşif ve kullanım arasında denge kurar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">3 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>🤖 Hedef Modeller</h2>
+        <div class="algo-box">
+            <div class="algo-item">
+                <h4>SVM</h4>
+                <p>C: [0.1, 1, 10, 100]</p>
+                <p>gamma: [scale, 0.01, 0.1, 1]</p>
+                <p>kernel: [rbf, linear, poly]</p>
+                <p><strong>48 kombinasyon</strong></p>
+            </div>
+            <div class="algo-item">
+                <h4>Random Forest</h4>
+                <p>n_estimators: [50, 100, 200]</p>
+                <p>max_depth: [5, 10, 20, None]</p>
+                <p>min_samples_split: [2, 5, 10]</p>
+                <p><strong>36 kombinasyon</strong></p>
+            </div>
+            <div class="algo-item">
+                <h4>Neural Network</h4>
+                <p>hidden_layers: [(50,), (100,), (100,50)]</p>
+                <p>alpha: [0.0001, 0.001, 0.01]</p>
+                <p>learning_rate: [constant, adaptive]</p>
+                <p><strong>18 kombinasyon</strong></p>
+            </div>
+        </div>
+        <span class="slide-number">4 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>📊 Sonuçlar: SVM</h2>
+        <div class="content">
+            <div class="column">
+                <table>
+                    <tr><th>Yöntem</th><th>Skor</th><th>Süre</th></tr>
+                    <tr><td>Grid Search</td><td>%76,3</td><td>16,2s</td></tr>
+                    <tr><td>Random Search</td><td>%76,3</td><td>8,3s</td></tr>
+                    <tr class="winner"><td>🏆 Bayesian</td><td class="highlight">%77,2</td><td>44,1s</td></tr>
+                </table>
+                <div class="card">
+                    <h3>Gözlemler</h3>
+                    <ul>
+                        <li>Bayesian <span class="highlight">+0,9%</span> iyileştirme</li>
+                        <li>Random, Grid'in yarı süresinde</li>
+                        <li>En iyi: C=2.37, gamma=scale, kernel=rbf</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/optimization_comparison_SVM.png" alt="SVM Optimizasyonu">
+            </div>
+        </div>
+        <span class="slide-number">5 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>📊 Sonuçlar: Random Forest</h2>
+        <div class="content">
+            <div class="column">
+                <table>
+                    <tr><th>Yöntem</th><th>Skor</th><th>Süre</th></tr>
+                    <tr><td>Grid Search</td><td>%78,0</td><td>12,3s</td></tr>
+                    <tr><td>Random Search</td><td>%78,0</td><td>9,7s</td></tr>
+                    <tr class="winner"><td>🏆 Bayesian</td><td class="highlight">%78,3</td><td>78,9s</td></tr>
+                </table>
+                <div class="card">
+                    <h3>Gözlemler</h3>
+                    <ul>
+                        <li>Bayesian <span class="highlight">+0,3%</span> iyileştirme</li>
+                        <li>En iyi genel skor: <span class="highlight">%78,3</span></li>
+                        <li>En iyi: n_estimators=131, max_depth=18</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/optimization_comparison_RandomForest.png" alt="RF Optimizasyonu">
+            </div>
+        </div>
+        <span class="slide-number">6 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>📊 Sonuçlar: Neural Network</h2>
+        <div class="content">
+            <div class="column">
+                <table>
+                    <tr><th>Yöntem</th><th>Skor</th><th>Süre</th></tr>
+                    <tr><td>Grid Search</td><td>%76,2</td><td>43,5s</td></tr>
+                    <tr><td>Random Search</td><td>%76,2</td><td>43,1s</td></tr>
+                    <tr class="winner"><td>🏆 Bayesian</td><td class="highlight">%76,6</td><td>395,4s</td></tr>
+                </table>
+                <div class="card">
+                    <h3>Gözlemler</h3>
+                    <ul>
+                        <li>Bayesian <span class="highlight">+0,4%</span> iyileştirme</li>
+                        <li>NN optimizasyonu en uzun sürdü</li>
+                        <li>En iyi: layer1=92, layer2=44</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/optimization_comparison_NeuralNetwork.png" alt="NN Optimizasyonu">
+            </div>
+        </div>
+        <span class="slide-number">7 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>📈 Genel Karşılaştırma</h2>
+        <div class="stat-grid">
+            <div class="stat-item">
+                <span class="value">%78,3</span>
+                <span class="label">En İyi Skor</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">+0,9%</span>
+                <span class="label">Bayesian İyileştirme</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">~2x</span>
+                <span class="label">Random Hız Avantajı</span>
+            </div>
+        </div>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Yöntem Karşılaştırması</h3>
+                    <table>
+                        <tr><th>Özellik</th><th>Grid</th><th>Random</th><th>Bayesian</th></tr>
+                        <tr><td>Optimallik</td><td>✅</td><td>❌</td><td>❌</td></tr>
+                        <tr><td>Ölçeklenebilirlik</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                        <tr><td>Verimlilik</td><td>❌</td><td>⚠️</td><td>✅</td></tr>
+                        <tr><td>Kolaylık</td><td>✅</td><td>✅</td><td>⚠️</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">8 / 10</span>
+    </div>
+
+    <div class="slide">
+        <h2>💡 Sonuçlar ve Öneriler</h2>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>🎯 Sonuçlar</h3>
+                    <ul>
+                        <li><span class="highlight">Bayesian</span> her zaman en iyi skoru buldu</li>
+                        <li><span class="highlight">Random Forest + Bayesian</span> = %78,3</li>
+                        <li>Random Search şaşırtıcı derecede etkili</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3">⚙️ Ne Zaman Hangisi?</h3>
+                    <ul>
+                        <li><strong>Sınırlı zaman:</strong> Random Search</li>
+                        <li><strong>Kritik uygulama:</strong> Bayesian</li>
+                        <li><strong>Küçük uzay:</strong> Grid Search</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <h3>🚀 Pratik Öneriler</h3>
+                    <ul>
+                        <li>Önce Random Search ile hızlı tarama</li>
+                        <li>Sonra Bayesian ile ince ayar</li>
+                        <li>Büyük uzaylarda Grid'den kaçının</li>
+                        <li>Optuna kullanımı kolay ve etkili</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">9 / 10</span>
+    </div>
+
+    <div class="slide title-slide">
+        <h1>Teşekkürler!</h1>
+        <p class="subtitle">Sorular?</p>
+        <div class="badge">Optimizasyon Projesi - Aralık 2024</div>
+        <span class="slide-number">10 / 10</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">◀ Önceki</button>
+        <button onclick="nextSlide()">Sonraki ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); });
+    </script>
+</body>
+</html>
+

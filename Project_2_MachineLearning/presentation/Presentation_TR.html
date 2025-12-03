@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makine Öğrenmesi Sunumu - Çelik Levha Hata Tespiti</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #065f46;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg: #134e4a;
+            --text: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            padding: 60px;
+            position: relative;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--bg) 100%);
+        }
+        
+        .slide.active { display: flex; flex-direction: column; }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 1em;
+            opacity: 0.5;
+        }
+        
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .title-slide h1 {
+            font-size: 4em;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .title-slide .subtitle {
+            font-size: 1.8em;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+        
+        .title-slide .badge {
+            margin-top: 40px;
+            background: var(--secondary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--secondary);
+        }
+        
+        .content { flex: 1; display: flex; gap: 40px; }
+        .column { flex: 1; }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3em; }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .stat-item {
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .stat-item .value { font-size: 3em; font-weight: 700; }
+        .stat-item .label { font-size: 1em; opacity: 0.9; margin-top: 10px; }
+        
+        ul { padding-left: 25px; }
+        li { margin-bottom: 15px; font-size: 1.2em; line-height: 1.6; }
+        
+        .image-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 60vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: var(--secondary); }
+        
+        .highlight {
+            background: linear-gradient(90deg, var(--accent), #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        .winner { background: rgba(245, 158, 11, 0.2) !important; }
+        
+        .algo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .algo-item {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .algo-item h4 { color: var(--accent); font-size: 1em; margin-bottom: 8px; }
+        .algo-item p { font-size: 0.9em; opacity: 0.8; }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .controls button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .controls button:hover { background: var(--accent); }
+    </style>
+</head>
+<body>
+    <!-- Slayt 1: Başlık -->
+    <div class="slide title-slide active">
+        <h1>🟢 Makine Öğrenmesi</h1>
+        <p class="subtitle">Çelik Levha Hata Tespiti</p>
+        <p class="subtitle">Çok Sınıflı Sınıflandırma</p>
+        <div class="badge">Proje 2 - Makine Öğrenmesi ve Örüntü Tanıma</div>
+        <span class="slide-number">1 / 12</span>
+    </div>
+
+    <!-- Slayt 2: Hedefler -->
+    <div class="slide">
+        <h2>🎯 Proje Hedefleri</h2>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Hedefler</h3>
+                    <ul>
+                        <li><span class="highlight">10 sınıflandırma algoritması</span> karşılaştırma</li>
+                        <li>Birden fazla metrikle değerlendirme</li>
+                        <li><span class="highlight">Özellik önemini</span> analiz etme</li>
+                        <li>Endüstriyel öneriler sunma</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Neden Makine Öğrenmesi?</h3>
+                    <ul>
+                        <li>Manuel denetim yavaş ve pahalı</li>
+                        <li>Otomatik kalite kontrolü</li>
+                        <li>7/24 sürekli izleme</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">2 / 12</span>
+    </div>
+
+    <!-- Slayt 3: Veri Seti -->
+    <div class="slide">
+        <h2>📊 Veri Setine Genel Bakış</h2>
+        <div class="stat-grid">
+            <div class="stat-item">
+                <span class="value">1.941</span>
+                <span class="label">Örnek</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">27</span>
+                <span class="label">Özellik</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">7</span>
+                <span class="label">Sınıf</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">80/20</span>
+                <span class="label">Bölüm</span>
+            </div>
+        </div>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Ön İşleme</h3>
+                    <ul>
+                        <li><strong>StandardScaler:</strong> z = (x - μ) / σ</li>
+                        <li><strong>Tabakalı bölüm:</strong> Sınıf dağılımını korur</li>
+                        <li><strong>Eğitim:</strong> 1.552 örnek</li>
+                        <li><strong>Test:</strong> 389 örnek</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <h3>Sınıf Dağılımı</h3>
+                    <ul>
+                        <li>Other_Faults: %34,7</li>
+                        <li>Bumps: %20,7</li>
+                        <li>K_Scratch: %20,1</li>
+                        <li>Z_Scratch: %9,8</li>
+                        <li>Pastry: %8,1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">3 / 12</span>
+    </div>
+
+    <!-- Slayt 4: Algoritmalar -->
+    <div class="slide">
+        <h2>🤖 Kullanılan Algoritmalar</h2>
+        <div class="algo-grid">
+            <div class="algo-item">
+                <h4>Lojistik Regresyon</h4>
+                <p>Doğrusal</p>
+            </div>
+            <div class="algo-item">
+                <h4>KNN</h4>
+                <p>k=5, k=10</p>
+            </div>
+            <div class="algo-item">
+                <h4>Karar Ağacı</h4>
+                <p>Kural tabanlı</p>
+            </div>
+            <div class="algo-item">
+                <h4>Rastgele Orman</h4>
+                <p>100 ağaç</p>
+            </div>
+            <div class="algo-item">
+                <h4>Grad. Boosting</h4>
+                <p>Sıralı</p>
+            </div>
+            <div class="algo-item">
+                <h4>SVM (RBF)</h4>
+                <p>Doğrusal olmayan</p>
+            </div>
+            <div class="algo-item">
+                <h4>SVM (Linear)</h4>
+                <p>Doğrusal</p>
+            </div>
+            <div class="algo-item">
+                <h4>MLP</h4>
+                <p>100 nöron</p>
+            </div>
+            <div class="algo-item" style="background: rgba(245, 158, 11, 0.3); border-color: var(--accent);">
+                <h4>XGBoost</h4>
+                <p>🏆 Kazanan</p>
+            </div>
+        </div>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Neden Bu Algoritmalar?</h3>
+                    <ul>
+                        <li>Farklı algoritma aileleri</li>
+                        <li>Doğrusal vs. doğrusal olmayan</li>
+                        <li>Tek model vs. topluluk</li>
+                        <li>Adil karşılaştırma</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">4 / 12</span>
+    </div>
+
+    <!-- Slayt 5: Sonuçlar -->
+    <div class="slide">
+        <h2>📈 Model Karşılaştırması</h2>
+        <div class="content">
+            <div class="column">
+                <table>
+                    <tr>
+                        <th>Model</th>
+                        <th>Doğruluk</th>
+                        <th>F1</th>
+                        <th>ROC-AUC</th>
+                    </tr>
+                    <tr class="winner">
+                        <td>🏆 XGBoost</td>
+                        <td class="highlight">%80,2</td>
+                        <td>%80,3</td>
+                        <td>%94,4</td>
+                    </tr>
+                    <tr class="winner">
+                        <td>🥈 Rastgele Orman</td>
+                        <td>%80,2</td>
+                        <td>%80,2</td>
+                        <td>%94,2</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient Boosting</td>
+                        <td>%79,2</td>
+                        <td>%79,4</td>
+                        <td>%94,5</td>
+                    </tr>
+                    <tr>
+                        <td>Sinir Ağı</td>
+                        <td>%78,4</td>
+                        <td>%78,5</td>
+                        <td>%92,3</td>
+                    </tr>
+                    <tr>
+                        <td>SVM (RBF)</td>
+                        <td>%75,1</td>
+                        <td>%75,2</td>
+                        <td>%92,0</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="image-container">
+                <img src="../figures/model_comparison_accuracy.png" alt="Model Karşılaştırması">
+            </div>
+        </div>
+        <span class="slide-number">5 / 12</span>
+    </div>
+
+    <!-- Slayt 6: En İyi Model -->
+    <div class="slide">
+        <h2>🏆 En İyi Model: XGBoost</h2>
+        <div class="stat-grid">
+            <div class="stat-item">
+                <span class="value">%80,2</span>
+                <span class="label">Doğruluk</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">%80,3</span>
+                <span class="label">F1-Skor</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">%94,4</span>
+                <span class="label">ROC-AUC</span>
+            </div>
+            <div class="stat-item">
+                <span class="value">7</span>
+                <span class="label">Sınıf</span>
+            </div>
+        </div>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>XGBoost Neden Kazandı?</h3>
+                    <ul>
+                        <li><strong>Düzenlileştirme:</strong> Aşırı öğrenmeyi önler</li>
+                        <li><strong>Gradyan artırma:</strong> Hataları düzeltir</li>
+                        <li><strong>Eksik değer işleme:</strong> Otomatik</li>
+                        <li><strong>Özellik önemi:</strong> Yerleşik</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/confusion_matrix.png" alt="Karmaşıklık Matrisi">
+            </div>
+        </div>
+        <span class="slide-number">6 / 12</span>
+    </div>
+
+    <!-- Slayt 7: ROC Eğrileri -->
+    <div class="slide">
+        <h2>📊 ROC Eğrileri</h2>
+        <div class="content">
+            <div class="column" style="flex: 0.4;">
+                <div class="card">
+                    <h3>ROC-AUC Nedir?</h3>
+                    <ul>
+                        <li>Eğri altındaki alan</li>
+                        <li>0.5 = Rastgele</li>
+                        <li>1.0 = Mükemmel</li>
+                        <li><span class="highlight">0.944 = Mükemmel</span></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Sınıf Bazında AUC</h3>
+                    <ul>
+                        <li>Z_Scratch: 0.99</li>
+                        <li>K_Scratch: 0.98</li>
+                        <li>Other_Faults: 0.91</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/roc_curves.png" alt="ROC Eğrileri">
+            </div>
+        </div>
+        <span class="slide-number">7 / 12</span>
+    </div>
+
+    <!-- Slayt 8: Özellik Önemi -->
+    <div class="slide">
+        <h2>🔍 Özellik Önemi</h2>
+        <div class="content">
+            <div class="column" style="flex: 0.5;">
+                <div class="card">
+                    <h3>En Önemli 5 Özellik</h3>
+                    <ol>
+                        <li><span class="highlight">LogOfAreas</span> (%7,3)</li>
+                        <li>Length_of_Conveyer (%6,1)</li>
+                        <li>Pixels_Areas (%5,7)</li>
+                        <li>Log_X_Index (%5,0)</li>
+                        <li>Outside_X_Index (%4,7)</li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3>Yorum</h3>
+                    <p>Geometrik özellikler (alan, konum) hata sınıflandırması için en ayırt edici. Bu, farklı hataların karakteristik şekil ve konumlara sahip olduğu endüstriyel bilgiyle uyumlu.</p>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="../figures/feature_importance.png" alt="Özellik Önemi">
+            </div>
+        </div>
+        <span class="slide-number">8 / 12</span>
+    </div>
+
+    <!-- Slayt 9: Sınıf Performansı -->
+    <div class="slide">
+        <h2>📋 Sınıf Bazında Performans</h2>
+        <div class="content">
+            <div class="column">
+                <table>
+                    <tr>
+                        <th>Sınıf</th>
+                        <th>Kesinlik</th>
+                        <th>Duyarlılık</th>
+                        <th>F1</th>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.2);">
+                        <td>Z_Scratch</td>
+                        <td>%100</td>
+                        <td>%95</td>
+                        <td class="highlight">%97</td>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.2);">
+                        <td>K_Scratch</td>
+                        <td>%99</td>
+                        <td>%94</td>
+                        <td class="highlight">%96</td>
+                    </tr>
+                    <tr>
+                        <td>Stains</td>
+                        <td>%92</td>
+                        <td>%86</td>
+                        <td>%89</td>
+                    </tr>
+                    <tr>
+                        <td>Dirtiness</td>
+                        <td>%90</td>
+                        <td>%82</td>
+                        <td>%86</td>
+                    </tr>
+                    <tr>
+                        <td>Other_Faults</td>
+                        <td>%72</td>
+                        <td>%81</td>
+                        <td>%77</td>
+                    </tr>
+                    <tr>
+                        <td>Bumps</td>
+                        <td>%76</td>
+                        <td>%67</td>
+                        <td>%71</td>
+                    </tr>
+                    <tr style="background: rgba(245, 158, 11, 0.2);">
+                        <td>Pastry</td>
+                        <td>%55</td>
+                        <td>%56</td>
+                        <td>%55</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <h3>Gözlemler</h3>
+                    <ul>
+                        <li><strong>En iyi:</strong> Z_Scratch ve K_Scratch</li>
+                        <li><strong>Zorlayıcı:</strong> Pastry (%55)</li>
+                        <li>Çizik hataları ayırt edici desenlere sahip</li>
+                        <li>Pastry, Other_Faults ile karıştırılıyor</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">9 / 12</span>
+    </div>
+
+    <!-- Slayt 10: Bulgular -->
+    <div class="slide">
+        <h2>🔑 Önemli Bulgular</h2>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>1. En İyi Model</h3>
+                    <p><span class="highlight">XGBoost</span> %80,2 doğruluk ve %94,4 ROC-AUC ile</p>
+                </div>
+                <div class="card">
+                    <h3>2. Topluluk Üstünlüğü</h3>
+                    <p>Ağaç tabanlı topluluklar tekli modelleri geride bırakıyor</p>
+                </div>
+                <div class="card">
+                    <h3>3. Özellik Önemi</h3>
+                    <p>Geometrik özellikler en ayırt edici</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <h3>4. Sınıf Değişkenliği</h3>
+                    <p>Çizik hataları kolay; Pastry zorlayıcı</p>
+                </div>
+                <div class="card">
+                    <h3>5. Endüstriyel Hazırlık</h3>
+                    <p>%80 doğruluk, yardımlı karar verme için uygun</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">10 / 12</span>
+    </div>
+
+    <!-- Slayt 11: Öneriler -->
+    <div class="slide">
+        <h2>💡 Öneriler</h2>
+        <div class="content">
+            <div class="column">
+                <div class="card">
+                    <h3>Dağıtım</h3>
+                    <ul>
+                        <li>XGBoost modelini <span class="highlight">insan gözetimi</span> ile dağıtın</li>
+                        <li>Belirsiz tahminler için güven eşikleri uygulayın</li>
+                        <li>Gerçek zamanlı izleme sistemi kurun</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>İyileştirme</h3>
+                    <ul>
+                        <li>Daha fazla <span class="highlight">Pastry</span> örneği toplayın</li>
+                        <li>Sınıf dengesizliği için SMOTE kullanın</li>
+                        <li>Maliyet duyarlı öğrenmeyi düşünün</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <h3>Gelecek Çalışmalar</h3>
+                    <ul>
+                        <li>Derin öğrenme (CNN) ile görüntü analizi</li>
+                        <li>Gerçek zamanlı tahmin API'si</li>
+                        <li>Açıklanabilir AI (SHAP değerleri)</li>
+                        <li>Model izleme ve yeniden eğitim</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">11 / 12</span>
+    </div>
+
+    <!-- Slayt 12: Teşekkürler -->
+    <div class="slide title-slide">
+        <h1>Teşekkürler!</h1>
+        <p class="subtitle">Sorular?</p>
+        <div class="badge">Makine Öğrenmesi Projesi - Aralık 2024</div>
+        <span class="slide-number">12 / 12</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">◀ Önceki</button>
+        <button onclick="nextSlide()">Sonraki ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>
+

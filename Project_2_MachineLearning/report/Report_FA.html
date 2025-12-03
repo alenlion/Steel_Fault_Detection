@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گزارش یادگیری ماشین - تشخیص عیوب صفحات فولادی</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #065f46;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 2;
+            direction: rtl;
+        }
+        
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        
+        header {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        h1 { font-size: 2.5em; color: var(--primary); margin-bottom: 15px; }
+        .subtitle { font-size: 1.3em; color: var(--secondary); font-weight: 300; }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        h3 { color: var(--secondary); font-size: 1.3em; margin: 25px 0 15px; }
+        p { margin-bottom: 15px; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-right: 5px solid var(--secondary);
+            padding: 20px 25px;
+            border-radius: 15px 0 0 15px;
+            margin: 20px 0;
+        }
+        
+        .algorithm-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .algorithm-card h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.2em; }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .result-item {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .result-item .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .result-item .label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #e2e8f0; }
+        th { background: var(--primary); color: white; }
+        tr:hover { background: #f0fdf4; }
+        
+        .figure { text-align: center; margin: 30px 0; }
+        .figure img { max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #718096; font-style: italic; }
+        
+        .winner { background: #fef3c7 !important; font-weight: bold; }
+        
+        footer { text-align: center; padding: 40px; color: white; }
+        ul, ol { padding-right: 25px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🟢 گزارش یادگیری ماشین</h1>
+            <p class="subtitle">تشخیص عیوب صفحات فولادی - طبقه‌بندی چند کلاسه</p>
+            <span class="badge">پروژه ۲ - یادگیری ماشین و شناسایی الگو</span>
+        </header>
+
+        <section>
+            <h2>۱. مقدمه</h2>
+            <p>این پروژه از <strong>الگوریتم‌های طبقه‌بندی یادگیری ماشین</strong> برای تشخیص و طبقه‌بندی خودکار عیوب سطح صفحات فولادی استفاده می‌کند. هدف مقایسه چندین الگوریتم و شناسایی بهترین مدل برای این مسئله طبقه‌بندی چند کلاسه است.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 اهداف:</strong>
+                <ul>
+                    <li>پیاده‌سازی و مقایسه ۱۰ الگوریتم طبقه‌بندی</li>
+                    <li>ارزیابی با معیارهای متعدد (دقت، F1، ROC-AUC)</li>
+                    <li>تحلیل اهمیت ویژگی‌ها</li>
+                    <li>ارائه توصیه‌ها برای استقرار صنعتی</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>۲. دیتاست و پیش‌پردازش</h2>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">۱,۹۴۱</span>
+                    <span class="label">کل نمونه‌ها</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۲۷</span>
+                    <span class="label">ویژگی</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۷</span>
+                    <span class="label">کلاس</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۸۰/۲۰</span>
+                    <span class="label">تقسیم آموزش/آزمون</span>
+                </div>
+            </div>
+            
+            <h3>۲.۱ مراحل پیش‌پردازش</h3>
+            
+            <div class="algorithm-card">
+                <h4>📊 نرمال‌سازی StandardScaler</h4>
+                <p><strong>فرمول:</strong> z = (x - μ) / σ</p>
+                <p><strong>چرا؟</strong> بسیاری از الگوریتم‌ها (SVM، KNN، شبکه‌های عصبی) به مقیاس ویژگی‌ها حساس هستند. بدون نرمال‌سازی، ویژگی‌ها با مقادیر بزرگ‌تر بر فرآیند یادگیری غالب می‌شوند.</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🔀 تقسیم آموزش/آزمون (۸۰/۲۰)</h4>
+                <p><strong>طبقه‌بندی شده:</strong> بله - توزیع کلاس در هر دو مجموعه حفظ می‌شود</p>
+                <p><strong>چرا؟</strong> ارزیابی عادلانه روی داده‌های دیده نشده و حفظ توزیع کلاس‌های نامتوازن</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>۳. الگوریتم‌های طبقه‌بندی</h2>
+            
+            <h3>۳.۱ مدل‌های خطی</h3>
+            
+            <div class="algorithm-card">
+                <h4>📈 رگرسیون لجستیک</h4>
+                <p><strong>نوع:</strong> خطی، احتمالاتی</p>
+                <p><strong>نحوه کار:</strong> یک تابع سیگموید برای پیش‌بینی احتمالات کلاس با تخمین حداکثر درست‌نمایی برازش می‌دهد.</p>
+                <p><strong>چرا استفاده کردیم:</strong> به عنوان baseline برای جداپذیری خطی</p>
+            </div>
+            
+            <h3>۳.۲ روش‌های مبتنی بر نمونه</h3>
+            
+            <div class="algorithm-card">
+                <h4>🎯 K نزدیک‌ترین همسایه (KNN)</h4>
+                <p><strong>نوع:</strong> مبتنی بر نمونه، غیرپارامتری</p>
+                <p><strong>پارامترها:</strong> k=۵، k=۱۰</p>
+                <p><strong>نحوه کار:</strong> بر اساس رأی اکثریت k همسایه نزدیک در فضای ویژگی طبقه‌بندی می‌کند.</p>
+            </div>
+            
+            <h3>۳.۳ روش‌های مبتنی بر درخت</h3>
+            
+            <div class="algorithm-card">
+                <h4>🌳 درخت تصمیم</h4>
+                <p><strong>نوع:</strong> مبتنی بر درخت، مبتنی بر قانون</p>
+                <p><strong>نحوه کار:</strong> داده‌ها را به صورت بازگشتی بر اساس آستانه‌های ویژگی که بهره اطلاعاتی را حداکثر می‌کنند تقسیم می‌کند.</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🌲 جنگل تصادفی</h4>
+                <p><strong>نوع:</strong> ترکیب درخت‌های تصمیم</p>
+                <p><strong>پارامترها:</strong> n_estimators=۱۰۰</p>
+                <p><strong>نحوه کار:</strong> چندین درخت روی نمونه‌های bootstrap با زیرمجموعه‌های تصادفی ویژگی آموزش می‌دهد.</p>
+            </div>
+            
+            <div class="algorithm-card">
+                <h4>🚀 XGBoost</h4>
+                <p><strong>نوع:</strong> ترکیب متوالی</p>
+                <p><strong>نحوه کار:</strong> درخت‌ها را به صورت متوالی آموزش می‌دهد، هر کدام خطاهای قبلی را اصلاح می‌کنند.</p>
+                <p><strong>مزایا:</strong> منظم‌سازی، موازی‌سازی، مدیریت مقادیر گمشده</p>
+            </div>
+            
+            <h3>۳.۴ ماشین بردار پشتیبان</h3>
+            
+            <div class="algorithm-card">
+                <h4>⚡ SVM (RBF و خطی)</h4>
+                <p><strong>نوع:</strong> طبقه‌بند حاشیه حداکثر</p>
+                <p><strong>هسته‌ها:</strong> RBF (غیرخطی)، خطی</p>
+                <p><strong>نحوه کار:</strong> ابرصفحه‌ای پیدا می‌کند که حاشیه بین کلاس‌ها را حداکثر می‌کند.</p>
+            </div>
+            
+            <h3>۳.۵ شبکه‌های عصبی</h3>
+            
+            <div class="algorithm-card">
+                <h4>🧠 پرسپترون چند لایه (MLP)</h4>
+                <p><strong>نوع:</strong> شبکه عصبی پیش‌خور</p>
+                <p><strong>معماری:</strong> لایه پنهان با ۱۰۰ نورون</p>
+                <p><strong>نحوه کار:</strong> نمایش‌های سلسله‌مراتبی را از طریق پس‌انتشار یاد می‌گیرد.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>۴. نتایج</h2>
+            
+            <h3>۴.۱ مقایسه مدل‌ها</h3>
+            
+            <table>
+                <tr>
+                    <th>مدل</th>
+                    <th>دقت</th>
+                    <th>صحت</th>
+                    <th>فراخوانی</th>
+                    <th>F1</th>
+                    <th>ROC-AUC</th>
+                </tr>
+                <tr class="winner">
+                    <td>🏆 XGBoost</td>
+                    <td>۸۰.۲٪</td>
+                    <td>۸۰.۹٪</td>
+                    <td>۸۰.۲٪</td>
+                    <td>۸۰.۳٪</td>
+                    <td>۹۴.۴٪</td>
+                </tr>
+                <tr class="winner">
+                    <td>🥈 جنگل تصادفی</td>
+                    <td>۸۰.۲٪</td>
+                    <td>۸۰.۹٪</td>
+                    <td>۸۰.۲٪</td>
+                    <td>۸۰.۲٪</td>
+                    <td>۹۴.۲٪</td>
+                </tr>
+                <tr>
+                    <td>Gradient Boosting</td>
+                    <td>۷۹.۲٪</td>
+                    <td>۸۰.۱٪</td>
+                    <td>۷۹.۲٪</td>
+                    <td>۷۹.۴٪</td>
+                    <td>۹۴.۵٪</td>
+                </tr>
+                <tr>
+                    <td>شبکه عصبی</td>
+                    <td>۷۸.۴٪</td>
+                    <td>۷۸.۸٪</td>
+                    <td>۷۸.۴٪</td>
+                    <td>۷۸.۵٪</td>
+                    <td>۹۲.۳٪</td>
+                </tr>
+            </table>
+            
+            <div class="figure">
+                <img src="../figures/model_comparison_accuracy.png" alt="مقایسه مدل‌ها">
+                <figcaption>شکل ۱: مقایسه دقت در همه مدل‌ها</figcaption>
+            </div>
+            
+            <h3>۴.۲ بهترین مدل: تحلیل XGBoost</h3>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="value">۸۰.۲٪</span>
+                    <span class="label">دقت</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۸۰.۳٪</span>
+                    <span class="label">امتیاز F1</span>
+                </div>
+                <div class="result-item">
+                    <span class="value">۹۴.۴٪</span>
+                    <span class="label">ROC-AUC</span>
+                </div>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/confusion_matrix.png" alt="ماتریس سردرگمی">
+                <figcaption>شکل ۲: ماتریس سردرگمی برای طبقه‌بند XGBoost</figcaption>
+            </div>
+        </section>
+
+        <section>
+            <h2>۵. اهمیت ویژگی‌ها</h2>
+            
+            <div class="figure">
+                <img src="../figures/feature_importance.png" alt="اهمیت ویژگی‌ها">
+                <figcaption>شکل ۳: ویژگی‌های برتر بر اساس اهمیت (XGBoost)</figcaption>
+            </div>
+            
+            <div class="highlight-box">
+                <strong>🔝 ۵ ویژگی مهم‌تر:</strong>
+                <ol>
+                    <li><strong>LogOfAreas</strong> (۷.۳٪) - لگاریتم مساحت عیب</li>
+                    <li><strong>Length_of_Conveyer</strong> (۶.۱٪) - موقعیت صفحه فولادی</li>
+                    <li><strong>Pixels_Areas</strong> (۵.۷٪) - اندازه عیب به پیکسل</li>
+                    <li><strong>Log_X_Index</strong> (۵.۰٪) - موقعیت لگاریتمی X</li>
+                    <li><strong>Outside_X_Index</strong> (۴.۷٪) - موقعیت خارجی X</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2>۶. نتیجه‌گیری</h2>
+            
+            <div class="highlight-box">
+                <strong>🎯 یافته‌های کلیدی:</strong>
+                <ol>
+                    <li><strong>بهترین مدل:</strong> XGBoost با دقت ۸۰.۲٪ و ROC-AUC ۹۴.۴٪</li>
+                    <li><strong>برتری ترکیبی:</strong> ترکیب‌های مبتنی بر درخت از مدل‌های تکی بهتر عمل می‌کنند</li>
+                    <li><strong>اهمیت ویژگی:</strong> ویژگی‌های هندسی تمایزگرترین هستند</li>
+                    <li><strong>آمادگی صنعتی:</strong> دقت ۸۰٪ برای تصمیم‌گیری به کمک انسان مناسب است</li>
+                </ol>
+            </div>
+            
+            <h3>توصیه‌ها</h3>
+            <ul>
+                <li>استقرار مدل XGBoost برای تولید با نظارت انسانی</li>
+                <li>جمع‌آوری نمونه‌های بیشتر Pastry برای بهبود تشخیص</li>
+                <li>در نظر گرفتن یادگیری حساس به هزینه اگر عیوب خاصی حیاتی‌تر هستند</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>پروژه یادگیری ماشین و شناسایی الگو - کارشناسی ارشد</p>
+            <p>آذر ۱۴۰۳</p>
+        </footer>
+    </div>
+</body>
+</html>
+

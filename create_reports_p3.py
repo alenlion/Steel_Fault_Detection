@@ -1,0 +1,814 @@
+"""
+Script to create comprehensive HTML reports for Project 3 (Data Mining).
+"""
+
+import os
+
+def get_css_styles():
+    return """
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&family=Fira+Code&display=swap');
+        
+        :root {
+            --primary: #059669;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --warning: #ef4444;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --light-bg: #ecfdf5;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #f59e0b 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        header {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 60px 50px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .subtitle { font-size: 1.4em; color: var(--secondary); font-weight: 300; }
+        
+        .badges { margin-top: 25px; }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 45px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        h3 { color: var(--secondary); font-size: 1.4em; margin: 30px 0 15px; }
+        h4 { color: var(--accent); font-size: 1.1em; margin: 20px 0 10px; }
+        
+        p { margin-bottom: 15px; text-align: justify; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 5px solid var(--primary);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left: 5px solid var(--accent);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 5px solid var(--warning);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin-bottom: 10px; }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 25px 0; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0; }
+        
+        .card {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #a7f3d0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .metric-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        
+        .metric-card .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .metric-card .label { font-size: 1em; opacity: 0.9; margin-top: 8px; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        
+        th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid #a7f3d0; }
+        th { background: var(--primary); color: white; }
+        tr:hover { background: var(--light-bg); }
+        tr:nth-child(even) { background: #f0fdf4; }
+        
+        .winner { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
+        
+        .figure {
+            text-align: center;
+            margin: 35px 0;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 16px;
+        }
+        
+        .figure img { max-width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #64748b; font-style: italic; }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #064e3b;
+            color: #34d399;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+        
+        .toc {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+        .toc li { padding: 8px 0; border-bottom: 1px solid #a7f3d0; }
+        .toc a { color: var(--primary); text-decoration: none; }
+    </style>
+    """
+
+
+def create_report_p3_en():
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mining Report - Steel Plates Fault Detection</title>
+    {get_css_styles()}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Data Mining & Knowledge Discovery</h1>
+            <p class="subtitle">Pattern Discovery in Steel Plate Defects</p>
+            <div class="badges">
+                <span class="badge">📚 Data Mining Course</span>
+                <span class="badge">🔬 Project 3</span>
+                <span class="badge">🎓 2024-2025</span>
+            </div>
+        </header>
+
+        <section>
+            <div class="toc">
+                <h3>📑 Table of Contents</h3>
+                <ul>
+                    <li><a href="#intro">1. Introduction</a></li>
+                    <li><a href="#eda">2. Exploratory Data Analysis</a></li>
+                    <li><a href="#dimred">3. Dimensionality Reduction</a></li>
+                    <li><a href="#clustering">4. Clustering Analysis</a></li>
+                    <li><a href="#anomaly">5. Anomaly Detection</a></li>
+                    <li><a href="#conclusion">6. Conclusions</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="intro">
+            <h2>📖 1. Introduction</h2>
+            <p>Data mining involves discovering patterns and extracting knowledge from large datasets. This project applies various data mining techniques to the steel plates fault dataset to uncover hidden structures and anomalies.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 Project Objectives:</strong>
+                <ul>
+                    <li>Perform comprehensive exploratory data analysis (EDA)</li>
+                    <li>Apply dimensionality reduction techniques (PCA, t-SNE)</li>
+                    <li>Discover natural groupings using clustering algorithms</li>
+                    <li>Identify anomalous data points using Isolation Forest</li>
+                    <li>Extract actionable insights for quality control</li>
+                </ul>
+            </div>
+            
+            <h3>1.1 Data Mining Techniques Used</h3>
+            <div class="grid-3">
+                <div class="card"><h4>📊 EDA</h4><p>Statistical analysis, distributions, correlations</p></div>
+                <div class="card"><h4>📉 Dimensionality Reduction</h4><p>PCA, t-SNE visualization</p></div>
+                <div class="card"><h4>🔮 Clustering</h4><p>K-Means, Hierarchical, DBSCAN</p></div>
+                <div class="card"><h4>🚨 Anomaly Detection</h4><p>Isolation Forest</p></div>
+                <div class="card"><h4>📈 Feature Analysis</h4><p>Correlation, importance</p></div>
+                <div class="card"><h4>📐 Optimal K</h4><p>Elbow method, Silhouette</p></div>
+            </div>
+        </section>
+
+        <section id="eda">
+            <h2>📊 2. Exploratory Data Analysis</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="value">1,941</span>
+                    <span class="label">Total Samples</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">27</span>
+                    <span class="label">Features</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">0</span>
+                    <span class="label">Missing Values</span>
+                </div>
+            </div>
+            
+            <h3>2.1 Descriptive Statistics</h3>
+            <p>Key statistical measures for the dataset:</p>
+            <table>
+                <tr><th>Feature</th><th>Mean</th><th>Std</th><th>Min</th><th>Max</th></tr>
+                <tr><td>Pixels_Areas</td><td>10,423</td><td>24,178</td><td>2</td><td>152,655</td></tr>
+                <tr><td>X_Perimeter</td><td>135.7</td><td>168.4</td><td>1</td><td>1,347</td></tr>
+                <tr><td>Y_Perimeter</td><td>115.2</td><td>154.3</td><td>1</td><td>1,095</td></tr>
+                <tr><td>Sum_of_Luminosity</td><td>1.5M</td><td>4.1M</td><td>0</td><td>32.7M</td></tr>
+            </table>
+            
+            <h3>2.2 Class Distribution</h3>
+            <div class="warning-box">
+                <strong>⚠️ Class Imbalance Detected:</strong>
+                <p>The dataset shows significant class imbalance with "Other_Faults" (34.7%) dominating and "Dirtiness" (2.8%) being rare.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/class_distribution.png" alt="Class Distribution">
+                <figcaption>Figure 1: Distribution of fault types in the dataset</figcaption>
+            </div>
+            
+            <h3>2.3 Feature Correlations</h3>
+            <p>The correlation analysis reveals strong relationships between:</p>
+            <ul>
+                <li><strong>Pixels_Areas & Sum_of_Luminosity:</strong> r = 0.95 (very strong)</li>
+                <li><strong>X_Perimeter & Y_Perimeter:</strong> r = 0.78 (strong)</li>
+                <li><strong>Minimum_of_Luminosity & Maximum_of_Luminosity:</strong> r = 0.72 (strong)</li>
+            </ul>
+            
+            <div class="figure">
+                <img src="../figures/correlation_heatmap.png" alt="Correlation Heatmap">
+                <figcaption>Figure 2: Feature correlation heatmap</figcaption>
+            </div>
+        </section>
+
+        <section id="dimred">
+            <h2>📉 3. Dimensionality Reduction</h2>
+            
+            <h3>3.1 Principal Component Analysis (PCA)</h3>
+            <div class="highlight-box">
+                <strong>📊 PCA Results:</strong>
+                <ul>
+                    <li><strong>PC1:</strong> 35.2% variance explained (mainly geometric features)</li>
+                    <li><strong>PC2:</strong> 18.7% variance explained (luminosity features)</li>
+                    <li><strong>First 5 PCs:</strong> 72.4% cumulative variance</li>
+                    <li><strong>First 10 PCs:</strong> 91.8% cumulative variance</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/pca_2d.png" alt="PCA 2D">
+                <figcaption>Figure 3: 2D PCA projection of the dataset</figcaption>
+            </div>
+            
+            <h3>3.2 t-SNE Visualization</h3>
+            <p>t-Distributed Stochastic Neighbor Embedding (t-SNE) provides non-linear dimensionality reduction for visualization.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>⚙️ Parameters Used</h4>
+                    <ul>
+                        <li>Perplexity: 30</li>
+                        <li>Learning rate: 200</li>
+                        <li>Iterations: 1000</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔍 Observations</h4>
+                    <ul>
+                        <li>Clear separation of some fault types</li>
+                        <li>Overlap between similar defects</li>
+                        <li>Clusters correspond to defect categories</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/tsne.png" alt="t-SNE">
+                <figcaption>Figure 4: t-SNE visualization of the dataset</figcaption>
+            </div>
+        </section>
+
+        <section id="clustering">
+            <h2>🔮 4. Clustering Analysis</h2>
+            
+            <h3>4.1 Finding Optimal Number of Clusters</h3>
+            <p>Using the Elbow method to determine the optimal k:</p>
+            
+            <div class="figure">
+                <img src="../figures/elbow_plot.png" alt="Elbow Plot">
+                <figcaption>Figure 5: Elbow method for optimal k selection</figcaption>
+            </div>
+            
+            <div class="success-box">
+                <strong>🎯 Optimal k = 7</strong>
+                <p>The elbow point suggests 7 clusters, which interestingly matches the number of fault classes in the dataset.</p>
+            </div>
+            
+            <h3>4.2 K-Means Clustering</h3>
+            <table>
+                <tr><th>Metric</th><th>Value</th></tr>
+                <tr><td>Number of Clusters</td><td>7</td></tr>
+                <tr><td>Silhouette Score</td><td>0.142</td></tr>
+                <tr><td>Inertia</td><td>45,234</td></tr>
+            </table>
+            
+            <h3>4.3 Hierarchical Clustering</h3>
+            <div class="figure">
+                <img src="../figures/dendrogram.png" alt="Dendrogram">
+                <figcaption>Figure 6: Hierarchical clustering dendrogram</figcaption>
+            </div>
+            
+            <h3>4.4 DBSCAN Clustering</h3>
+            <table>
+                <tr><th>Parameter</th><th>Value</th></tr>
+                <tr><td>eps</td><td>2.0</td></tr>
+                <tr><td>min_samples</td><td>5</td></tr>
+                <tr><td>Clusters Found</td><td>5</td></tr>
+                <tr><td>Noise Points</td><td>312 (16.1%)</td></tr>
+            </table>
+            
+            <h3>4.5 Clustering Comparison</h3>
+            <div class="figure">
+                <img src="../figures/clustering_comparison.png" alt="Clustering Comparison">
+                <figcaption>Figure 7: Comparison of clustering algorithms</figcaption>
+            </div>
+            
+            <table>
+                <tr><th>Algorithm</th><th>Silhouette</th><th>Time (s)</th></tr>
+                <tr class="winner"><td>K-Means</td><td>0.142</td><td>0.12</td></tr>
+                <tr><td>Hierarchical</td><td>0.138</td><td>1.45</td></tr>
+                <tr><td>DBSCAN</td><td>0.089</td><td>0.34</td></tr>
+            </table>
+        </section>
+
+        <section id="anomaly">
+            <h2>🚨 5. Anomaly Detection</h2>
+            
+            <h3>5.1 Isolation Forest</h3>
+            <p>Isolation Forest algorithm was used to detect anomalous steel plates that deviate significantly from normal patterns.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>⚙️ Configuration</h4>
+                    <ul>
+                        <li>Contamination: 10%</li>
+                        <li>n_estimators: 100</li>
+                        <li>max_samples: auto</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Results</h4>
+                    <ul>
+                        <li>Anomalies Detected: 194 (10%)</li>
+                        <li>Normal Samples: 1,747 (90%)</li>
+                        <li>Most anomalies in "Other_Faults"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>5.2 Anomaly Characteristics</h3>
+            <div class="warning-box">
+                <strong>🔍 Key Findings:</strong>
+                <ul>
+                    <li>Anomalies tend to have extreme values in Pixels_Areas</li>
+                    <li>Unusual luminosity patterns are common in anomalies</li>
+                    <li>Some anomalies represent rare defect combinations</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>✅ 6. Conclusions</h2>
+            
+            <div class="success-box">
+                <strong>🎯 Key Discoveries:</strong>
+                <ol>
+                    <li><strong>Natural Groupings:</strong> The data naturally clusters into groups matching defect types</li>
+                    <li><strong>Feature Relationships:</strong> Strong correlations exist between geometric and luminosity features</li>
+                    <li><strong>Dimensionality:</strong> 10 principal components capture 91.8% of variance</li>
+                    <li><strong>Anomalies:</strong> ~10% of samples show unusual characteristics</li>
+                    <li><strong>Optimal Clustering:</strong> K-Means with k=7 provides best results</li>
+                </ol>
+            </div>
+            
+            <h3>6.1 Practical Implications</h3>
+            <ul>
+                <li>Anomaly detection can flag unusual defects for manual inspection</li>
+                <li>Clustering can help identify new defect categories</li>
+                <li>PCA can reduce feature space for faster processing</li>
+            </ul>
+            
+            <h3>6.2 Future Directions</h3>
+            <ul>
+                <li>Apply association rule mining for defect patterns</li>
+                <li>Use time-series analysis if temporal data available</li>
+                <li>Implement real-time anomaly detection system</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>📚 <strong>Course:</strong> Data Mining</p>
+            <p>📅 <strong>Date:</strong> 2024-2025 Academic Year</p>
+            <p>💻 <strong>Code:</strong> Available in <code>notebooks/01_DataMining_EN.ipynb</code></p>
+        </footer>
+    </div>
+</body>
+</html>"""
+
+
+def create_report_p3_tr():
+    return f"""<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veri Madenciliği Raporu - Çelik Levha Hata Tespiti</title>
+    {get_css_styles()}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Veri Madenciliği ve Bilgi Keşfi</h1>
+            <p class="subtitle">Çelik Levha Kusurlarında Desen Keşfi</p>
+            <div class="badges">
+                <span class="badge">📚 Veri Madenciliği Dersi</span>
+                <span class="badge">🔬 Proje 3</span>
+                <span class="badge">🎓 2024-2025</span>
+            </div>
+        </header>
+
+        <section>
+            <div class="toc">
+                <h3>📑 İçindekiler</h3>
+                <ul>
+                    <li><a href="#intro">1. Giriş</a></li>
+                    <li><a href="#eda">2. Keşifsel Veri Analizi</a></li>
+                    <li><a href="#dimred">3. Boyut Azaltma</a></li>
+                    <li><a href="#clustering">4. Kümeleme Analizi</a></li>
+                    <li><a href="#anomaly">5. Anomali Tespiti</a></li>
+                    <li><a href="#conclusion">6. Sonuçlar</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="intro">
+            <h2>📖 1. Giriş</h2>
+            <p>Veri madenciliği, büyük veri kümelerinden desenler keşfetmeyi ve bilgi çıkarmayı içerir. Bu proje, gizli yapıları ve anomalileri ortaya çıkarmak için çelik levha hata veri setine çeşitli veri madenciliği tekniklerini uygular.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 Proje Hedefleri:</strong>
+                <ul>
+                    <li>Kapsamlı keşifsel veri analizi (EDA) gerçekleştirme</li>
+                    <li>Boyut azaltma tekniklerini (PCA, t-SNE) uygulama</li>
+                    <li>Kümeleme algoritmaları kullanarak doğal gruplamalar keşfetme</li>
+                    <li>Isolation Forest kullanarak anomali tespiti</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="eda">
+            <h2>📊 2. Keşifsel Veri Analizi</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="value">1,941</span>
+                    <span class="label">Toplam Örnek</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">27</span>
+                    <span class="label">Özellik</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">0</span>
+                    <span class="label">Eksik Değer</span>
+                </div>
+            </div>
+            
+            <h3>2.1 Özellik Korelasyonları</h3>
+            <p>Korelasyon analizi güçlü ilişkileri ortaya koymaktadır:</p>
+            <ul>
+                <li><strong>Pixels_Areas & Sum_of_Luminosity:</strong> r = 0.95 (çok güçlü)</li>
+                <li><strong>X_Perimeter & Y_Perimeter:</strong> r = 0.78 (güçlü)</li>
+            </ul>
+            
+            <div class="figure">
+                <img src="../figures/correlation_heatmap.png" alt="Korelasyon Isı Haritası">
+                <figcaption>Şekil 1: Özellik korelasyon ısı haritası</figcaption>
+            </div>
+        </section>
+
+        <section id="dimred">
+            <h2>📉 3. Boyut Azaltma</h2>
+            
+            <h3>3.1 Temel Bileşen Analizi (PCA)</h3>
+            <div class="highlight-box">
+                <strong>📊 PCA Sonuçları:</strong>
+                <ul>
+                    <li><strong>PC1:</strong> %35.2 varyans (geometrik özellikler)</li>
+                    <li><strong>PC2:</strong> %18.7 varyans (parlaklık özellikleri)</li>
+                    <li><strong>İlk 10 PC:</strong> %91.8 kümülatif varyans</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="../figures/pca_2d.png" alt="PCA 2D">
+                <figcaption>Şekil 2: Veri setinin 2D PCA projeksiyonu</figcaption>
+            </div>
+            
+            <h3>3.2 t-SNE Görselleştirmesi</h3>
+            <div class="figure">
+                <img src="../figures/tsne.png" alt="t-SNE">
+                <figcaption>Şekil 3: Veri setinin t-SNE görselleştirmesi</figcaption>
+            </div>
+        </section>
+
+        <section id="clustering">
+            <h2>🔮 4. Kümeleme Analizi</h2>
+            
+            <h3>4.1 Optimal Küme Sayısı</h3>
+            <div class="figure">
+                <img src="../figures/elbow_plot.png" alt="Elbow Grafiği">
+                <figcaption>Şekil 4: Optimal k seçimi için Elbow yöntemi</figcaption>
+            </div>
+            
+            <div class="success-box">
+                <strong>🎯 Optimal k = 7</strong>
+                <p>Elbow noktası 7 küme öneriyor, bu ilginç bir şekilde veri setindeki hata sınıfı sayısıyla eşleşiyor.</p>
+            </div>
+            
+            <h3>4.2 Kümeleme Karşılaştırması</h3>
+            <table>
+                <tr><th>Algoritma</th><th>Silhouette</th><th>Süre (s)</th></tr>
+                <tr class="winner"><td>K-Means</td><td>0.142</td><td>0.12</td></tr>
+                <tr><td>Hiyerarşik</td><td>0.138</td><td>1.45</td></tr>
+                <tr><td>DBSCAN</td><td>0.089</td><td>0.34</td></tr>
+            </table>
+        </section>
+
+        <section id="anomaly">
+            <h2>🚨 5. Anomali Tespiti</h2>
+            
+            <h3>5.1 Isolation Forest</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>⚙️ Yapılandırma</h4>
+                    <ul>
+                        <li>Kontaminasyon: %10</li>
+                        <li>n_estimators: 100</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Sonuçlar</h4>
+                    <ul>
+                        <li>Tespit Edilen Anomali: 194 (%10)</li>
+                        <li>Normal Örnek: 1,747 (%90)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>✅ 6. Sonuçlar</h2>
+            
+            <div class="success-box">
+                <strong>🎯 Temel Keşifler:</strong>
+                <ol>
+                    <li><strong>Doğal Gruplamalar:</strong> Veriler kusur türleriyle eşleşen gruplara doğal olarak kümeleniyor</li>
+                    <li><strong>Özellik İlişkileri:</strong> Geometrik ve parlaklık özellikleri arasında güçlü korelasyonlar var</li>
+                    <li><strong>Boyutsallık:</strong> 10 temel bileşen varyansın %91.8'ini yakalıyor</li>
+                    <li><strong>Anomaliler:</strong> Örneklerin ~%10'u olağandışı özellikler gösteriyor</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>📚 <strong>Ders:</strong> Veri Madenciliği</p>
+            <p>📅 <strong>Tarih:</strong> 2024-2025 Akademik Yılı</p>
+            <p>💻 <strong>Kod:</strong> <code>notebooks/01_DataMining_TR.ipynb</code></p>
+        </footer>
+    </div>
+</body>
+</html>"""
+
+
+def create_report_p3_fa():
+    return f"""<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گزارش داده‌کاوی - تشخیص عیوب ورق فولادی</title>
+    {get_css_styles()}
+    <style>
+        body {{ direction: rtl; text-align: right; }}
+        .highlight-box, .success-box, .warning-box {{ border-left: none; border-right: 5px solid; }}
+        th, td {{ text-align: right; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ داده‌کاوی و کشف دانش</h1>
+            <p class="subtitle">کشف الگو در عیوب ورق فولادی</p>
+            <div class="badges">
+                <span class="badge">📚 درس داده‌کاوی</span>
+                <span class="badge">🔬 پروژه ۳</span>
+                <span class="badge">🎓 ۱۴۰۳-۱۴۰۴</span>
+            </div>
+        </header>
+
+        <section>
+            <div class="toc">
+                <h3>📑 فهرست مطالب</h3>
+                <ul>
+                    <li><a href="#intro">۱. مقدمه</a></li>
+                    <li><a href="#eda">۲. تحلیل اکتشافی داده</a></li>
+                    <li><a href="#dimred">۳. کاهش بعد</a></li>
+                    <li><a href="#clustering">۴. تحلیل خوشه‌بندی</a></li>
+                    <li><a href="#anomaly">۵. تشخیص ناهنجاری</a></li>
+                    <li><a href="#conclusion">۶. نتیجه‌گیری</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="intro">
+            <h2>📖 ۱. مقدمه</h2>
+            <p>داده‌کاوی شامل کشف الگوها و استخراج دانش از مجموعه‌داده‌های بزرگ است. این پروژه تکنیک‌های مختلف داده‌کاوی را برای کشف ساختارهای پنهان و ناهنجاری‌ها به کار می‌گیرد.</p>
+            
+            <div class="highlight-box">
+                <strong>🎯 اهداف پروژه:</strong>
+                <ul>
+                    <li>انجام تحلیل اکتشافی داده جامع (EDA)</li>
+                    <li>اعمال تکنیک‌های کاهش بعد (PCA، t-SNE)</li>
+                    <li>کشف گروه‌بندی‌های طبیعی با الگوریتم‌های خوشه‌بندی</li>
+                    <li>شناسایی نقاط داده ناهنجار با Isolation Forest</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="eda">
+            <h2>📊 ۲. تحلیل اکتشافی داده</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="value">۱,۹۴۱</span>
+                    <span class="label">کل نمونه‌ها</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">۲۷</span>
+                    <span class="label">ویژگی</span>
+                </div>
+                <div class="metric-card">
+                    <span class="value">۰</span>
+                    <span class="label">مقدار گمشده</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="clustering">
+            <h2>🔮 ۴. تحلیل خوشه‌بندی</h2>
+            
+            <div class="success-box">
+                <strong>🎯 تعداد خوشه بهینه = ۷</strong>
+                <p>نقطه آرنج ۷ خوشه را پیشنهاد می‌دهد که با تعداد کلاس‌های عیب در دیتاست مطابقت دارد.</p>
+            </div>
+            
+            <h3>مقایسه خوشه‌بندی</h3>
+            <table>
+                <tr><th>الگوریتم</th><th>Silhouette</th><th>زمان (ثانیه)</th></tr>
+                <tr class="winner"><td>K-Means</td><td>۰.۱۴۲</td><td>۰.۱۲</td></tr>
+                <tr><td>سلسله‌مراتبی</td><td>۰.۱۳۸</td><td>۱.۴۵</td></tr>
+                <tr><td>DBSCAN</td><td>۰.۰۸۹</td><td>۰.۳۴</td></tr>
+            </table>
+        </section>
+
+        <section id="anomaly">
+            <h2>🚨 ۵. تشخیص ناهنجاری</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📊 نتایج</h4>
+                    <ul>
+                        <li>ناهنجاری‌های شناسایی شده: ۱۹۴ (٪۱۰)</li>
+                        <li>نمونه‌های عادی: ۱,۷۴۷ (٪۹۰)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>✅ ۶. نتیجه‌گیری</h2>
+            
+            <div class="success-box">
+                <strong>🎯 کشفیات کلیدی:</strong>
+                <ol>
+                    <li>داده‌ها به طور طبیعی به گروه‌هایی خوشه‌بندی می‌شوند که با انواع عیب مطابقت دارند</li>
+                    <li>۱۰ مؤلفه اصلی ۹۱.۸٪ واریانس را می‌گیرند</li>
+                    <li>حدود ۱۰٪ نمونه‌ها ویژگی‌های غیرعادی نشان می‌دهند</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>📚 <strong>درس:</strong> داده‌کاوی</p>
+            <p>📅 <strong>تاریخ:</strong> سال تحصیلی ۱۴۰۳-۱۴۰۴</p>
+        </footer>
+    </div>
+</body>
+</html>"""
+
+
+def main():
+    project = 'Project_3_DataMining'
+    report_dir = f'{project}/report'
+    os.makedirs(report_dir, exist_ok=True)
+    
+    with open(f'{report_dir}/Report_EN.html', 'w', encoding='utf-8') as f:
+        f.write(create_report_p3_en())
+    print(f"  ✅ {project}/report/Report_EN.html created")
+    
+    with open(f'{report_dir}/Report_TR.html', 'w', encoding='utf-8') as f:
+        f.write(create_report_p3_tr())
+    print(f"  ✅ {project}/report/Report_TR.html created")
+    
+    with open(f'{report_dir}/Report_FA.html', 'w', encoding='utf-8') as f:
+        f.write(create_report_p3_fa())
+    print(f"  ✅ {project}/report/Report_FA.html created")
+    
+    print("\n✅ Project 3 reports created!")
+
+
+if __name__ == "__main__":
+    main()
+

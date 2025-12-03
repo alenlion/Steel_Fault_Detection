@@ -3,582 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ارائه داده‌کاوی - تشخیص عیوب صفحات فولادی</title>
+    <title>داده‌کاوی - ارائه</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap');
         
         :root {
-            --primary: #0f172a;
-            --secondary: #3b82f6;
-            --accent: #f59e0b;
-            --bg: #1e293b;
-            --text: #f1f5f9;
+            --slide-width: 100vw;
+            --slide-height: 100vh;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
+        html { font-size: 2.2vmin; scroll-behavior: smooth; }
+        
         body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: var(--primary);
-            color: var(--text);
-            overflow: hidden;
-            direction: rtl;
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
         }
         
         .slide {
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            padding: 60px;
+            min-height: 100vh;
+            padding: 8vh 8vw;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--bg) 100%);
+            overflow: hidden;
         }
-        
-        .slide.active { display: flex; flex-direction: column; }
         
         .slide-number {
             position: absolute;
-            bottom: 30px;
-            left: 40px;
-            font-size: 1em;
+            bottom: 3vh;
+            right: 4vw;
+            font-size: 0.8rem;
             opacity: 0.5;
+            font-family: 'Fira Code', monospace;
         }
         
-        .title-slide {
+        /* Slide Themes */
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
             justify-content: center;
             align-items: center;
             text-align: center;
         }
         
-        .title-slide h1 {
-            font-size: 3.5em;
-            background: linear-gradient(90deg, var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+        .slide-content {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
         
-        .title-slide .subtitle {
-            font-size: 1.8em;
-            font-weight: 300;
-            opacity: 0.8;
+        .slide-highlight {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
         }
         
-        .title-slide .badge {
-            margin-top: 40px;
-            background: var(--accent);
-            color: var(--primary);
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: 600;
+        .slide-results {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .slide-end {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         
         h2 {
-            font-size: 2.2em;
-            margin-bottom: 40px;
-            color: var(--secondary);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            padding-bottom: 0.5rem;
+            display: inline-block;
         }
         
-        .content {
-            flex: 1;
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+        
+        .badges {
             display: flex;
-            gap: 40px;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
         }
         
-        .column { flex: 1; }
-        
-        .card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
         }
         
-        .card h3 {
-            color: var(--accent);
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            font-size: 1.3rem;
         }
         
-        .stat-grid {
+        li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin: 30px 0;
+            gap: 2rem;
+            margin: 2rem 0;
         }
         
-        .stat-item {
-            background: linear-gradient(135deg, var(--secondary), #1d4ed8);
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 40px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h4 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
             text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
-        .stat-item .value {
-            font-size: 3.5em;
-            font-weight: 700;
+        .metric-card .value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            display: block;
+            color: #fbbf24;
         }
         
-        .stat-item .label {
-            font-size: 1.1em;
-            opacity: 0.9;
-            margin-top: 10px;
-        }
-        
-        ul { padding-right: 25px; }
-        li { margin-bottom: 15px; font-size: 1.2em; line-height: 1.8; }
-        
-        .image-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .image-container img {
-            max-width: 100%;
-            max-height: 60vh;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        .metric-card .label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
         }
         
         th, td {
-            padding: 18px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
         
-        th { background: var(--secondary); }
-        
-        .highlight {
-            background: linear-gradient(90deg, var(--accent), #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
+        th {
+            background: rgba(0,0,0,0.3);
+            font-weight: 600;
+            color: #38bdf8;
         }
         
-        .algo-box {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0;
+        tr:hover {
+            background: rgba(255,255,255,0.05);
         }
         
-        .algo-item {
-            flex: 1;
+        .winner {
+            background: rgba(251, 191, 36, 0.2) !important;
+        }
+        
+        .highlight-box {
             background: rgba(59, 130, 246, 0.2);
-            border: 2px solid var(--secondary);
-            border-radius: 15px;
-            padding: 25px;
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .figure {
             text-align: center;
+            margin: 2rem 0;
         }
         
-        .algo-item h4 {
-            color: var(--accent);
-            font-size: 1.3em;
-            margin-bottom: 10px;
+        .figure img {
+            max-width: 90%;
+            max-height: 50vh;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         
-        .controls {
+        .figure figcaption {
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 1rem;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #22d3ee;
+        }
+        
+        .emoji-large {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 2rem;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        @media print {
+            .slide { page-break-after: always; }
+            html { font-size: 12pt; }
+        }
+        
+        /* Navigation hint */
+        .scroll-hint {
             position: fixed;
-            bottom: 30px;
-            right: 50%;
-            transform: translateX(50%);
-            display: flex;
-            gap: 15px;
-            z-index: 100;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
         }
         
-        .controls button {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 1em;
-            transition: all 0.3s;
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
-        
-        .controls button:hover { background: var(--accent); }
+    </style>
+    
+    <style>
+        body { direction: rtl; }
+        .slide-title { background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%); }
     </style>
 </head>
 <body>
-    <!-- اسلاید ۱: عنوان -->
-    <div class="slide title-slide active">
-        <h1>🔵 داده‌کاوی</h1>
-        <p class="subtitle">تشخیص عیوب صفحات فولادی</p>
-        <p class="subtitle">کشف الگو و استخراج دانش</p>
-        <div class="badge">پروژه ۳ - درس داده‌کاوی</div>
-        <span class="slide-number">۱ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۲: اهداف -->
-    <div class="slide">
-        <h2>🎯 اهداف پروژه</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>اهداف</h3>
-                    <ul>
-                        <li><span class="highlight">تحلیل اکتشافی داده</span> جامع</li>
-                        <li>اعمال <span class="highlight">کاهش ابعاد</span> (PCA, t-SNE)</li>
-                        <li>مقایسه الگوریتم‌های <span class="highlight">خوشه‌بندی</span></li>
-                        <li>انجام <span class="highlight">تشخیص ناهنجاری</span></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>چرا داده‌کاوی؟</h3>
-                    <ul>
-                        <li>کشف الگوهای پنهان در داده‌های صنعتی</li>
-                        <li>درک ساختار داده قبل از طبقه‌بندی</li>
-                        <li>شناسایی نقاط پرت و ناهنجاری‌ها</li>
-                    </ul>
-                </div>
-            </div>
+    <section class="slide slide-title">
+        <span class="emoji-large">⛏️</span>
+        <h1>داده‌کاوی و کشف دانش</h1>
+        <p class="subtitle">کشف الگو در عیوب ورق فولادی</p>
+        <div class="badges">
+            <span class="badge">📚 داده‌کاوی</span>
+            <span class="badge">🔬 پروژه ۳</span>
         </div>
-        <span class="slide-number">۲ / ۱۲</span>
-    </div>
+        <span class="slide-number">1</span>
+    </section>
 
-    <!-- اسلاید ۳: دیتاست -->
-    <div class="slide">
-        <h2>📊 نمای کلی دیتاست</h2>
-        <div class="stat-grid">
-            <div class="stat-item">
+    <section class="slide slide-content">
+        <h2>📊 دیتاست</h2>
+        <div class="grid-3">
+            <div class="metric-card">
                 <span class="value">۱,۹۴۱</span>
                 <span class="label">نمونه</span>
             </div>
-            <div class="stat-item">
+            <div class="metric-card">
                 <span class="value">۲۷</span>
                 <span class="label">ویژگی</span>
             </div>
-            <div class="stat-item">
-                <span class="value">۷</span>
-                <span class="label">کلاس عیب</span>
+            <div class="metric-card">
+                <span class="value">۰</span>
+                <span class="label">گمشده</span>
             </div>
         </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>انواع عیب</h3>
-                    <ul>
-                        <li>سایر عیوب (۳۴.۷٪)</li>
-                        <li>برآمدگی (۲۰.۷٪)</li>
-                        <li>خراش K (۲۰.۱٪)</li>
-                        <li>خراش Z (۹.۸٪)</li>
-                        <li>خمیری (۸.۱٪)</li>
-                        <li>لکه (۳.۷٪)</li>
-                        <li>کثیفی (۲.۸٪)</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/class_distribution.png" alt="توزیع کلاس‌ها">
-            </div>
-        </div>
-        <span class="slide-number">۳ / ۱۲</span>
-    </div>
+        <span class="slide-number">2</span>
+    </section>
 
-    <!-- اسلاید ۴: تحلیل همبستگی -->
-    <div class="slide">
-        <h2>🔍 تحلیل همبستگی</h2>
-        <div class="content">
-            <div class="column" style="flex: 0.6;">
-                <div class="card">
-                    <h3>روش: همبستگی پیرسون</h3>
-                    <p style="margin: 15px 0;">اندازه‌گیری روابط خطی بین ویژگی‌ها</p>
-                </div>
-                <div class="card">
-                    <h3>یافته‌های کلیدی</h3>
-                    <ul>
-                        <li>همبستگی قوی بین <span class="highlight">ویژگی‌های هندسی</span></li>
-                        <li>LogOfAreas ↔ Pixels_Areas</li>
-                        <li>ویژگی‌های روشنایی <span class="highlight">خوشه مجزا</span> تشکیل می‌دهند</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/correlation_heatmap.png" alt="نقشه حرارتی همبستگی">
-            </div>
-        </div>
-        <span class="slide-number">۴ / ۱۲</span>
-    </div>
+    <section class="slide slide-content">
+        <h2>🔮 خوشه‌بندی</h2>
+        <table>
+            <tr><th>الگوریتم</th><th>Silhouette</th></tr>
+            <tr class="winner"><td>K-Means</td><td>۰.۱۴۲</td></tr>
+            <tr><td>سلسله‌مراتبی</td><td>۰.۱۳۸</td></tr>
+            <tr><td>DBSCAN</td><td>۰.۰۸۹</td></tr>
+        </table>
+        <span class="slide-number">3</span>
+    </section>
 
-    <!-- اسلاید ۵: PCA -->
-    <div class="slide">
-        <h2>📉 کاهش ابعاد: PCA</h2>
-        <div class="content">
-            <div class="column" style="flex: 0.5;">
-                <div class="card">
-                    <h3>الگوریتم: PCA</h3>
-                    <ul>
-                        <li><strong>نوع:</strong> خطی</li>
-                        <li><strong>مؤلفه‌ها:</strong> ۲</li>
-                        <li><strong>واریانس توضیح داده شده:</strong> <span class="highlight">۴۳.۴٪</span></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>چرا PCA؟</h3>
-                    <ul>
-                        <li>محاسبه سریع</li>
-                        <li>نتایج قابل تفسیر</li>
-                        <li>حفظ ساختار کلی</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/pca_2d.png" alt="PCA">
-            </div>
-        </div>
-        <span class="slide-number">۵ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۶: t-SNE -->
-    <div class="slide">
-        <h2>📉 کاهش ابعاد: t-SNE</h2>
-        <div class="content">
-            <div class="column" style="flex: 0.5;">
-                <div class="card">
-                    <h3>الگوریتم: t-SNE</h3>
-                    <ul>
-                        <li><strong>نوع:</strong> غیرخطی</li>
-                        <li><strong>Perplexity:</strong> ۳۰</li>
-                        <li><strong>تکرار:</strong> ۱۰۰۰</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>چرا t-SNE؟</h3>
-                    <ul>
-                        <li>نمایش <span class="highlight">ساختار محلی</span></li>
-                        <li>تجسم بهتر خوشه‌ها</li>
-                        <li>ثبت روابط غیرخطی</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/tsne.png" alt="t-SNE">
-            </div>
-        </div>
-        <span class="slide-number">۶ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۷: الگوریتم‌های خوشه‌بندی -->
-    <div class="slide">
-        <h2>🎯 الگوریتم‌های خوشه‌بندی</h2>
-        <div class="algo-box">
-            <div class="algo-item">
-                <h4>K-Means</h4>
-                <p>مبتنی بر مرکز</p>
-                <p>سریع و ساده</p>
-                <p>k=۷ خوشه</p>
-            </div>
-            <div class="algo-item">
-                <h4>سلسله‌مراتبی</h4>
-                <p>ادغام پایین به بالا</p>
-                <p>خروجی دندروگرام</p>
-                <p>پیوند Ward</p>
-            </div>
-            <div class="algo-item">
-                <h4>DBSCAN</h4>
-                <p>مبتنی بر چگالی</p>
-                <p>بدون k از پیش تعیین شده</p>
-                <p>تشخیص نقاط پرت</p>
-            </div>
-        </div>
-        <div class="content">
-            <div class="image-container">
-                <img src="../figures/elbow_plot.png" alt="نمودار آرنج" style="max-height: 40vh;">
-            </div>
-            <div class="image-container">
-                <img src="../figures/dendrogram.png" alt="دندروگرام" style="max-height: 40vh;">
-            </div>
-        </div>
-        <span class="slide-number">۷ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۸: نتایج خوشه‌بندی -->
-    <div class="slide">
-        <h2>📊 نتایج خوشه‌بندی</h2>
-        <div class="content">
-            <div class="column">
-                <table>
-                    <tr>
-                        <th>روش</th>
-                        <th>Silhouette</th>
-                        <th>ARI</th>
-                        <th>NMI</th>
-                    </tr>
-                    <tr>
-                        <td><strong>K-Means</strong></td>
-                        <td class="highlight">۰.۱۹۷</td>
-                        <td class="highlight">۰.۲۰۲</td>
-                        <td>۰.۲۹۰</td>
-                    </tr>
-                    <tr>
-                        <td>سلسله‌مراتبی</td>
-                        <td>۰.۱۸۵</td>
-                        <td>۰.۱۵۳</td>
-                        <td class="highlight">۰.۳۱۰</td>
-                    </tr>
-                </table>
-                <div class="card">
-                    <h3>برنده: K-Means</h3>
-                    <p>بهترین عملکرد کلی با بالاترین ARI (۰.۲۰۲)</p>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/clustering_comparison.png" alt="مقایسه خوشه‌بندی">
-            </div>
-        </div>
-        <span class="slide-number">۸ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۹: تشخیص ناهنجاری -->
-    <div class="slide">
-        <h2>🚨 تشخیص ناهنجاری</h2>
-        <div class="stat-grid">
-            <div class="stat-item">
-                <span class="value">۱۹۴</span>
-                <span class="label">ناهنجاری یافت شده</span>
-            </div>
-            <div class="stat-item">
-                <span class="value">۱۰٪</span>
-                <span class="label">نرخ آلودگی</span>
-            </div>
-        </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>الگوریتم: Isolation Forest</h3>
-                    <ul>
-                        <li><strong>نوع:</strong> مبتنی بر درخت</li>
-                        <li><strong>نحوه کار:</strong> ناهنجاری‌ها به تقسیم‌های کمتری نیاز دارند</li>
-                        <li><strong>مزیت:</strong> بدون محاسبه فاصله</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>چرا Isolation Forest؟</h3>
-                    <ul>
-                        <li>کارآمد با ابعاد بالا</li>
-                        <li>حداقل تنظیم پارامتر</li>
-                        <li>پیچیدگی زمانی خطی</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <span class="slide-number">۹ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۱۰: یافته‌های کلیدی -->
-    <div class="slide">
-        <h2>🔑 یافته‌های کلیدی</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>۱. عدم توازن کلاس</h3>
-                    <p>سایر عیوب غالب است (۳۴.۷٪) در حالی که کثیفی نادر است (۲.۸٪)</p>
-                </div>
-                <div class="card">
-                    <h3>۲. همبستگی ویژگی‌ها</h3>
-                    <p>همبستگی‌های قوی بین ویژگی‌های هندسی و روشنایی</p>
-                </div>
-                <div class="card">
-                    <h3>۳. محدودیت PCA</h3>
-                    <p>فقط ۴۳.۴٪ واریانس در ۲D ← روابط غیرخطی پیچیده</p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <h3>۴. چالش خوشه‌بندی</h3>
-                    <p>امتیازات پایین silhouette نشان‌دهنده خوشه‌های همپوشان</p>
-                </div>
-                <div class="card">
-                    <h3>۵. بهترین روش</h3>
-                    <p><span class="highlight">K-Means</span> بالاترین ARI را کسب کرد (۰.۲۰۲)</p>
-                </div>
-                <div class="card">
-                    <h3>۶. ناهنجاری‌ها</h3>
-                    <p>۱۹۴ نمونه (۱۰٪) به عنوان نقاط پرت احتمالی شناسایی شدند</p>
-                </div>
-            </div>
-        </div>
-        <span class="slide-number">۱۰ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۱۱: پیشنهادات -->
-    <div class="slide">
-        <h2>💡 پیشنهادات</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>برای طبقه‌بندی</h3>
-                    <ul>
-                        <li>استفاده از <span class="highlight">SMOTE</span> برای عدم توازن کلاس</li>
-                        <li>اعمال مهندسی ویژگی</li>
-                        <li>در نظر گرفتن روش‌های ترکیبی</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>برای کنترل کیفیت</h3>
-                    <ul>
-                        <li>بررسی ۱۹۴ ناهنجاری</li>
-                        <li>پایش بلادرنگ</li>
-                        <li>پیاده‌سازی سیستم هشدار اولیه</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <h3>کارهای آینده</h3>
-                    <ul>
-                        <li>رویکردهای یادگیری عمیق (Autoencoders)</li>
-                        <li>تحلیل سری زمانی در صورت موجود بودن داده</li>
-                        <li>کاوش قوانین انجمنی</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <span class="slide-number">۱۱ / ۱۲</span>
-    </div>
-
-    <!-- اسلاید ۱۲: تشکر -->
-    <div class="slide title-slide">
-        <h1>با تشکر!</h1>
-        <p class="subtitle">سؤالات؟</p>
-        <div class="badge">پروژه داده‌کاوی - آذر ۱۴۰۳</div>
-        <span class="slide-number">۱۲ / ۱۲</span>
-    </div>
-
-    <div class="controls">
-        <button onclick="prevSlide()">قبلی ◀</button>
-        <button onclick="nextSlide()">▶ بعدی</button>
-    </div>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        
-        function showSlide(n) {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (n + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }
-        
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
-            if (e.key === 'ArrowLeft') prevSlide();
-        });
-    </script>
+    <section class="slide slide-end">
+        <span class="emoji-large">🙏</span>
+        <h1>متشکرم!</h1>
+        <span class="slide-number">4</span>
+    </section>
 </body>
 </html>
-

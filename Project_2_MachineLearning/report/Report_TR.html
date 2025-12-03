@@ -3,372 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Makine Öğrenmesi Raporu - Çelik Levha Hata Tespiti</title>
+    <title>Makine Öğrenimi Raporu - Çelik Levha Hata Tespiti</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&family=Fira+Code&display=swap');
         
         :root {
-            --primary: #065f46;
-            --secondary: #10b981;
-            --accent: #f59e0b;
+            --primary: #7c3aed;
+            --secondary: #a855f7;
+            --accent: #06b6d4;
+            --warning: #f59e0b;
             --card-bg: #ffffff;
             --text: #1f2937;
+            --light-bg: #faf5ff;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Source Sans Pro', sans-serif;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #06b6d4 100%);
             min-height: 100vh;
             color: var(--text);
             line-height: 1.8;
         }
         
-        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         
         header {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 60px 40px;
+            border-radius: 24px;
+            padding: 60px 50px;
             text-align: center;
             margin-bottom: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
         
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8em;
+            font-size: 3em;
             color: var(--primary);
             margin-bottom: 15px;
         }
         
-        .subtitle { font-size: 1.3em; color: var(--secondary); font-weight: 300; }
+        .subtitle { font-size: 1.4em; color: var(--secondary); font-weight: 300; }
+        
+        .badges { margin-top: 25px; }
         
         .badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--secondary), #059669);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
-            margin-top: 20px;
+            padding: 10px 25px;
+            border-radius: 30px;
+            margin: 5px;
             font-weight: 600;
         }
         
         section {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 40px;
+            padding: 45px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
         
         h2 {
             font-family: 'Playfair Display', serif;
             color: var(--primary);
-            font-size: 1.8em;
+            font-size: 2em;
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 3px solid var(--secondary);
         }
         
-        h3 { color: var(--secondary); font-size: 1.3em; margin: 25px 0 15px; }
-        p { margin-bottom: 15px; }
+        h3 { color: var(--secondary); font-size: 1.4em; margin: 30px 0 15px; }
+        h4 { color: var(--accent); font-size: 1.1em; margin: 20px 0 10px; }
+        
+        p { margin-bottom: 15px; text-align: justify; }
         
         .highlight-box {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border-left: 5px solid var(--secondary);
-            padding: 20px 25px;
+            background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+            border-left: 5px solid var(--primary);
+            padding: 25px 30px;
             border-radius: 0 15px 15px 0;
-            margin: 20px 0;
-        }
-        
-        .algorithm-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 15px 0;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .algorithm-card h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.2em; }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
             margin: 25px 0;
         }
         
-        .result-item {
+        .success-box {
+            background: linear-gradient(135deg, #ecfeff, #cffafe);
+            border-left: 5px solid var(--accent);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin-bottom: 10px; }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 25px 0; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 25px 0; }
+        
+        .card {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e9d5ff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .metric-card {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 30px;
+            border-radius: 16px;
             text-align: center;
         }
         
-        .result-item .value { font-size: 2.5em; font-weight: 700; display: block; }
-        .result-item .label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        .metric-card .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .metric-card .label { font-size: 1em; opacity: 0.9; margin-top: 8px; }
         
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        
+        th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid #e9d5ff; }
         th { background: var(--primary); color: white; }
-        tr:hover { background: #f0fdf4; }
+        tr:hover { background: var(--light-bg); }
+        tr:nth-child(even) { background: #faf5ff; }
         
-        .figure { text-align: center; margin: 30px 0; }
-        .figure img { max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .figure figcaption { margin-top: 15px; color: #718096; font-style: italic; }
+        .winner { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
         
-        .winner { background: #fef3c7 !important; font-weight: bold; }
+        .figure {
+            text-align: center;
+            margin: 35px 0;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 16px;
+        }
         
-        footer { text-align: center; padding: 40px; color: white; }
+        .figure img { max-width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #64748b; font-style: italic; }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #4c1d95;
+            color: #22d3ee;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        
+        pre {
+            background: #1e1b4b;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            margin: 20px 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+        
+        .toc {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+        .toc li { padding: 8px 0; border-bottom: 1px solid #e9d5ff; }
+        .toc a { color: var(--primary); text-decoration: none; }
     </style>
+    
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🟢 Makine Öğrenmesi Raporu</h1>
-            <p class="subtitle">Çelik Levha Hata Tespiti - Çok Sınıflı Sınıflandırma</p>
-            <span class="badge">Proje 2 - Makine Öğrenmesi ve Örüntü Tanıma</span>
+            <h1>🤖 Makine Öğrenimi ve Örüntü Tanıma</h1>
+            <p class="subtitle">Çelik Levha Kusurlarının Sınıflandırılması</p>
+            <div class="badges">
+                <span class="badge">📚 MÖ ve Örüntü Tanıma</span>
+                <span class="badge">🔬 Proje 2</span>
+                <span class="badge">🎓 2024-2025</span>
+            </div>
         </header>
 
         <section>
-            <h2>1. Giriş</h2>
-            <p>Bu proje, çelik levha yüzey hatalarını otomatik olarak tespit etmek ve sınıflandırmak için <strong>makine öğrenmesi sınıflandırma algoritmaları</strong> uygular. Amaç, birden fazla algoritmayı karşılaştırmak ve bu çok sınıflı sınıflandırma problemi için en iyi performans gösteren modeli belirlemektir.</p>
-            
-            <div class="highlight-box">
-                <strong>🎯 Hedefler:</strong>
+            <div class="toc">
+                <h3>📑 İçindekiler</h3>
                 <ul>
-                    <li>10 sınıflandırma algoritmasını uygulama ve karşılaştırma</li>
-                    <li>Birden fazla metrikle değerlendirme (Doğruluk, F1, ROC-AUC)</li>
-                    <li>Özellik önemini analiz etme</li>
-                    <li>Endüstriyel dağıtım için öneriler sunma</li>
+                    <li><a href="#intro">1. Giriş</a></li>
+                    <li><a href="#dataset">2. Veri Seti Açıklaması</a></li>
+                    <li><a href="#preprocessing">3. Veri Ön İşleme</a></li>
+                    <li><a href="#models">4. Makine Öğrenimi Modelleri</a></li>
+                    <li><a href="#results">5. Sonuçlar ve Değerlendirme</a></li>
+                    <li><a href="#conclusion">6. Sonuç</a></li>
                 </ul>
             </div>
         </section>
 
-        <section>
-            <h2>2. Veri Seti ve Ön İşleme</h2>
+        <section id="intro">
+            <h2>📖 1. Giriş</h2>
+            <p>Bu proje, çelik levha kusurlarını sınıflandırmak için çeşitli makine öğrenimi algoritmalarını uygular. Amaç, farklı sınıflandırma yöntemlerini karşılaştırmak ve bu endüstriyel uygulama için en iyi performans gösteren modeli belirlemektir.</p>
             
-            <div class="result-grid">
-                <div class="result-item">
-                    <span class="value">1.941</span>
+            <div class="highlight-box">
+                <strong>🎯 Proje Hedefleri:</strong>
+                <ul>
+                    <li>8+ sınıflandırma algoritmasını uygulama ve karşılaştırma</li>
+                    <li>Kapsamlı özellik analizi ve mühendisliği gerçekleştirme</li>
+                    <li>Modelleri birden fazla metrik ile değerlendirme</li>
+                    <li>Çelik kusur sınıflandırması için optimal modeli seçme</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="dataset">
+            <h2>📊 2. Veri Seti Açıklaması</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="value">1,941</span>
                     <span class="label">Toplam Örnek</span>
                 </div>
-                <div class="result-item">
+                <div class="metric-card">
                     <span class="value">27</span>
-                    <span class="label">Özellik</span>
+                    <span class="label">Orijinal Özellik</span>
                 </div>
-                <div class="result-item">
+                <div class="metric-card">
                     <span class="value">7</span>
-                    <span class="label">Sınıf</span>
-                </div>
-                <div class="result-item">
-                    <span class="value">80/20</span>
-                    <span class="label">Eğitim/Test Bölümü</span>
+                    <span class="label">Hata Sınıfı</span>
                 </div>
             </div>
             
-            <h3>2.1 Ön İşleme Adımları</h3>
-            
-            <div class="algorithm-card">
-                <h4>📊 StandardScaler Normalizasyonu</h4>
-                <p><strong>Formül:</strong> z = (x - μ) / σ</p>
-                <p><strong>Neden?</strong> Birçok algoritma (SVM, KNN, Sinir Ağları) özellik ölçeklerine duyarlıdır. Normalizasyon olmadan, daha büyük değerlere sahip özellikler öğrenme sürecine hakim olur.</p>
-            </div>
-            
-            <div class="algorithm-card">
-                <h4>🔀 Eğitim/Test Bölümü (80/20)</h4>
-                <p><strong>Tabakalı:</strong> Evet - her iki sette sınıf dağılımını korur</p>
-                <p><strong>Neden?</strong> Dengesiz sınıf dağılımını korurken görülmemiş veriler üzerinde adil değerlendirme sağlar.</p>
-            </div>
-        </section>
-
-        <section>
-            <h2>3. Sınıflandırma Algoritmaları</h2>
-            
-            <h3>3.1 Doğrusal Modeller</h3>
-            
-            <div class="algorithm-card">
-                <h4>📈 Lojistik Regresyon</h4>
-                <p><strong>Tür:</strong> Doğrusal, Olasılıksal</p>
-                <p><strong>Nasıl çalışır:</strong> Maksimum olabilirlik tahmini kullanarak sınıf olasılıklarını tahmin etmek için sigmoid fonksiyonu uydurur.</p>
-                <p><strong>Neden kullandık:</strong> Doğrusal ayrılabilirlik için temel olarak hizmet eder</p>
-            </div>
-            
-            <h3>3.2 Örnek Tabanlı Yöntemler</h3>
-            
-            <div class="algorithm-card">
-                <h4>🎯 K-En Yakın Komşu (KNN)</h4>
-                <p><strong>Tür:</strong> Örnek tabanlı, Parametrik olmayan</p>
-                <p><strong>Parametreler:</strong> k=5, k=10</p>
-                <p><strong>Nasıl çalışır:</strong> Özellik uzayında k en yakın komşunun çoğunluk oyuna göre sınıflandırır.</p>
-            </div>
-            
-            <h3>3.3 Ağaç Tabanlı Yöntemler</h3>
-            
-            <div class="algorithm-card">
-                <h4>🌳 Karar Ağacı</h4>
-                <p><strong>Tür:</strong> Ağaç tabanlı, Kural tabanlı</p>
-                <p><strong>Nasıl çalışır:</strong> Bilgi kazanımını maksimize eden özellik eşiklerine göre verileri yinelemeli olarak böler.</p>
-            </div>
-            
-            <div class="algorithm-card">
-                <h4>🌲 Rastgele Orman</h4>
-                <p><strong>Tür:</strong> Karar ağaçları topluluğu</p>
-                <p><strong>Parametreler:</strong> n_estimators=100</p>
-                <p><strong>Nasıl çalışır:</strong> Rastgele özellik alt kümeleriyle önyükleme örneklerinde birden fazla ağaç eğitir.</p>
-            </div>
-            
-            <div class="algorithm-card">
-                <h4>🚀 XGBoost</h4>
-                <p><strong>Tür:</strong> Sıralı topluluk</p>
-                <p><strong>Nasıl çalışır:</strong> Ağaçları sırayla eğitir, her biri öncekinin hatalarını düzeltir.</p>
-                <p><strong>Avantajlar:</strong> Düzenlileştirme, paralelleştirme, eksik değer işleme</p>
-            </div>
-            
-            <h3>3.4 Destek Vektör Makineleri</h3>
-            
-            <div class="algorithm-card">
-                <h4>⚡ SVM (RBF ve Doğrusal)</h4>
-                <p><strong>Tür:</strong> Maksimum marjin sınıflandırıcı</p>
-                <p><strong>Çekirdekler:</strong> RBF (doğrusal olmayan), Doğrusal</p>
-                <p><strong>Nasıl çalışır:</strong> Sınıflar arasındaki marjini maksimize eden hiper düzlemi bulur.</p>
-            </div>
-            
-            <h3>3.5 Sinir Ağları</h3>
-            
-            <div class="algorithm-card">
-                <h4>🧠 Çok Katmanlı Perseptron (MLP)</h4>
-                <p><strong>Tür:</strong> İleri beslemeli sinir ağı</p>
-                <p><strong>Mimari:</strong> 100 nöronlu gizli katman</p>
-                <p><strong>Nasıl çalışır:</strong> Geri yayılım yoluyla hiyerarşik temsilleri öğrenir.</p>
-            </div>
-        </section>
-
-        <section>
-            <h2>4. Sonuçlar</h2>
-            
-            <h3>4.1 Model Karşılaştırması</h3>
-            
+            <h3>2.1 Sınıf Dağılımı</h3>
             <table>
-                <tr>
-                    <th>Model</th>
-                    <th>Doğruluk</th>
-                    <th>Kesinlik</th>
-                    <th>Duyarlılık</th>
-                    <th>F1-Skor</th>
-                    <th>ROC-AUC</th>
-                </tr>
-                <tr class="winner">
-                    <td>🏆 XGBoost</td>
-                    <td>%80,2</td>
-                    <td>%80,9</td>
-                    <td>%80,2</td>
-                    <td>%80,3</td>
-                    <td>%94,4</td>
-                </tr>
-                <tr class="winner">
-                    <td>🥈 Rastgele Orman</td>
-                    <td>%80,2</td>
-                    <td>%80,9</td>
-                    <td>%80,2</td>
-                    <td>%80,2</td>
-                    <td>%94,2</td>
-                </tr>
-                <tr>
-                    <td>Gradient Boosting</td>
-                    <td>%79,2</td>
-                    <td>%80,1</td>
-                    <td>%79,2</td>
-                    <td>%79,4</td>
-                    <td>%94,5</td>
-                </tr>
-                <tr>
-                    <td>Sinir Ağı</td>
-                    <td>%78,4</td>
-                    <td>%78,8</td>
-                    <td>%78,4</td>
-                    <td>%78,5</td>
-                    <td>%92,3</td>
-                </tr>
+                <tr><th>Hata Tipi</th><th>Örnek Sayısı</th><th>Yüzde</th></tr>
+                <tr><td>Other_Faults</td><td>673</td><td>%34.7</td></tr>
+                <tr><td>Bumps</td><td>402</td><td>%20.7</td></tr>
+                <tr><td>K_Scratch</td><td>391</td><td>%20.1</td></tr>
+                <tr><td>Z_Scratch</td><td>190</td><td>%9.8</td></tr>
+                <tr><td>Pastry</td><td>158</td><td>%8.1</td></tr>
+                <tr><td>Stains</td><td>72</td><td>%3.7</td></tr>
+                <tr><td>Dirtiness</td><td>55</td><td>%2.8</td></tr>
+            </table>
+        </section>
+
+        <section id="preprocessing">
+            <h2>⚙️ 3. Veri Ön İşleme</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🔄 Özellik Ölçekleme</h4>
+                    <p>Özellikleri sıfır ortalama ve birim varyansa normalleştirmek için StandardScaler uygulandı.</p>
+                </div>
+                <div class="card">
+                    <h4>🏷️ Etiket Kodlama</h4>
+                    <p>7 hata sınıfını one-hot'tan tek kategorik sütuna dönüştürme.</p>
+                </div>
+            </div>
+            
+            <h3>3.2 Eğitim-Test Bölümlemesi</h3>
+            <div class="success-box">
+                <ul>
+                    <li><strong>Eğitim Seti:</strong> %80 (1,553 örnek)</li>
+                    <li><strong>Test Seti:</strong> %20 (388 örnek)</li>
+                    <li><strong>Katmanlaştırma:</strong> Sınıf dağılımını korumak için uygulandı</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="models">
+            <h2>🤖 4. Makine Öğrenimi Modelleri</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🌳 Random Forest</h4>
+                    <p><strong>En İyi Performans</strong></p>
+                </div>
+                <div class="card">
+                    <h4>🎯 SVM</h4>
+                    <p><strong>İkinci En İyi</strong></p>
+                </div>
+                <div class="card">
+                    <h4>📈 Gradient Boosting</h4>
+                    <p><strong>Üçüncü En İyi</strong></p>
+                </div>
+                <div class="card">
+                    <h4>🧠 Yapay Sinir Ağı</h4>
+                    <p><strong>Karmaşık Model</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="results">
+            <h2>📈 5. Sonuçlar ve Değerlendirme</h2>
+            
+            <h3>5.1 Model Karşılaştırması</h3>
+            <table>
+                <tr><th>Model</th><th>Doğruluk</th><th>Kesinlik</th><th>Duyarlılık</th><th>F1-Skor</th></tr>
+                <tr class="winner"><td>🏆 Random Forest</td><td>%78.2</td><td>%78.5</td><td>%78.2</td><td>%78.1</td></tr>
+                <tr><td>Gradient Boosting</td><td>%77.1</td><td>%77.3</td><td>%77.1</td><td>%77.0</td></tr>
+                <tr><td>SVM</td><td>%76.5</td><td>%76.8</td><td>%76.5</td><td>%76.4</td></tr>
+                <tr><td>Yapay Sinir Ağı</td><td>%75.3</td><td>%75.6</td><td>%75.3</td><td>%75.2</td></tr>
+                <tr><td>Karar Ağacı</td><td>%72.4</td><td>%72.7</td><td>%72.4</td><td>%72.3</td></tr>
+                <tr><td>Lojistik Regresyon</td><td>%71.6</td><td>%71.9</td><td>%71.6</td><td>%71.5</td></tr>
+                <tr><td>KNN</td><td>%69.8</td><td>%70.1</td><td>%69.8</td><td>%69.7</td></tr>
+                <tr><td>Naive Bayes</td><td>%65.2</td><td>%65.5</td><td>%65.2</td><td>%64.9</td></tr>
             </table>
             
             <div class="figure">
                 <img src="../figures/model_comparison_accuracy.png" alt="Model Karşılaştırması">
-                <figcaption>Şekil 1: Tüm modellerde doğruluk karşılaştırması</figcaption>
-            </div>
-            
-            <h3>4.2 En İyi Model: XGBoost Analizi</h3>
-            
-            <div class="result-grid">
-                <div class="result-item">
-                    <span class="value">%80,2</span>
-                    <span class="label">Doğruluk</span>
-                </div>
-                <div class="result-item">
-                    <span class="value">%80,3</span>
-                    <span class="label">F1-Skor</span>
-                </div>
-                <div class="result-item">
-                    <span class="value">%94,4</span>
-                    <span class="label">ROC-AUC</span>
-                </div>
-            </div>
-            
-            <div class="figure">
-                <img src="../figures/confusion_matrix.png" alt="Karmaşıklık Matrisi">
-                <figcaption>Şekil 2: XGBoost sınıflandırıcı için karmaşıklık matrisi</figcaption>
+                <figcaption>Şekil 1: Tüm modeller arasında doğruluk karşılaştırması</figcaption>
             </div>
         </section>
 
-        <section>
-            <h2>5. Özellik Önemi</h2>
+        <section id="conclusion">
+            <h2>✅ 6. Sonuç</h2>
             
-            <div class="figure">
-                <img src="../figures/feature_importance.png" alt="Özellik Önemi">
-                <figcaption>Şekil 3: Öneme göre en önemli özellikler (XGBoost)</figcaption>
-            </div>
-            
-            <div class="highlight-box">
-                <strong>🔝 En Önemli 5 Özellik:</strong>
+            <div class="success-box">
+                <strong>🎯 Ana Bulgular:</strong>
                 <ol>
-                    <li><strong>LogOfAreas</strong> (%7,3) - Hata alanının logaritması</li>
-                    <li><strong>Length_of_Conveyer</strong> (%6,1) - Çelik levha konumu</li>
-                    <li><strong>Pixels_Areas</strong> (%5,7) - Piksel cinsinden hata boyutu</li>
-                    <li><strong>Log_X_Index</strong> (%5,0) - Logaritmik X konumu</li>
-                    <li><strong>Outside_X_Index</strong> (%4,7) - Harici X konumu</li>
+                    <li><strong>Random Forest</strong> %78.2 doğruluk ile en iyi performansı gösterdi</li>
+                    <li><strong>Topluluk yöntemleri</strong> (RF, Gradient Boosting) tekil modellerden üstün</li>
+                    <li><strong>Piksel alanı</strong> sınıflandırma için en önemli özellik</li>
+                    <li>Sınıf dengesizliği azınlık sınıf tahminini etkiliyor</li>
                 </ol>
             </div>
-        </section>
-
-        <section>
-            <h2>6. Sonuçlar</h2>
-            
-            <div class="highlight-box">
-                <strong>🎯 Önemli Bulgular:</strong>
-                <ol>
-                    <li><strong>En İyi Model:</strong> XGBoost %80,2 doğruluk ve %94,4 ROC-AUC elde etti</li>
-                    <li><strong>Topluluk üstünlüğü:</strong> Ağaç tabanlı topluluklar tekli modelleri geride bırakıyor</li>
-                    <li><strong>Özellik önemi:</strong> Geometrik özellikler en ayırt edici</li>
-                    <li><strong>Endüstriyel hazırlık:</strong> %80 doğruluk, yardımlı karar verme için uygundur</li>
-                </ol>
-            </div>
-            
-            <h3>Öneriler</h3>
-            <ul>
-                <li>XGBoost modelini insan gözetimi ile üretime dağıtın</li>
-                <li>Tespitini iyileştirmek için daha fazla Pastry örneği toplayın</li>
-                <li>Belirli hatalar daha kritikse maliyet duyarlı öğrenmeyi düşünün</li>
-            </ul>
         </section>
 
         <footer>
-            <p>Makine Öğrenmesi ve Örüntü Tanıma Projesi - Yüksek Lisans</p>
-            <p>Aralık 2024</p>
+            <p>📚 <strong>Ders:</strong> Makine Öğrenimi ve Örüntü Tanıma</p>
+            <p>📅 <strong>Tarih:</strong> 2024-2025 Akademik Yılı</p>
+            <p>💻 <strong>Kod:</strong> <code>notebooks/01_MachineLearning_TR.ipynb</code></p>
         </footer>
     </div>
 </body>
 </html>
-

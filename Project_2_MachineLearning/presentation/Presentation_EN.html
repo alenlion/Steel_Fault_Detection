@@ -3,261 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Learning Presentation - Steel Plates Fault Detection</title>
+    <title>Machine Learning - Presentation</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        :root { --primary: #065f46; --secondary: #10b981; --accent: #f59e0b; --bg: #134e4a; --text: #f1f5f9; }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap');
+        
+        :root {
+            --slide-width: 100vw;
+            --slide-height: 100vh;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--primary); color: var(--text); overflow: hidden; }
-        .slide { width: 100vw; height: 100vh; display: none; padding: 60px; position: relative; background: linear-gradient(135deg, var(--primary) 0%, var(--bg) 100%); }
-        .slide.active { display: flex; flex-direction: column; }
-        .slide-number { position: absolute; bottom: 30px; right: 40px; font-size: 1em; opacity: 0.5; }
-        .title-slide { justify-content: center; align-items: center; text-align: center; }
-        .title-slide h1 { font-size: 4em; background: linear-gradient(90deg, var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        .title-slide .subtitle { font-size: 1.8em; font-weight: 300; opacity: 0.8; }
-        .title-slide .badge { margin-top: 40px; background: var(--secondary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 600; }
-        h2 { font-size: 2.5em; margin-bottom: 40px; color: var(--secondary); }
-        .content { flex: 1; display: flex; gap: 40px; } .column { flex: 1; }
-        .card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .card h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3em; }
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin: 30px 0; }
-        .stat-item { background: linear-gradient(135deg, var(--secondary), #059669); border-radius: 20px; padding: 30px; text-align: center; }
-        .stat-item .value { font-size: 3em; font-weight: 700; } .stat-item .label { font-size: 1em; opacity: 0.9; margin-top: 10px; }
-        ul { padding-left: 25px; } li { margin-bottom: 15px; font-size: 1.2em; line-height: 1.6; }
-        .image-container { flex: 1; display: flex; align-items: center; justify-content: center; }
-        .image-container img { max-width: 100%; max-height: 60vh; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; } th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); } th { background: var(--secondary); }
-        .highlight { background: linear-gradient(90deg, var(--accent), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
-        .winner { background: rgba(245, 158, 11, 0.2) !important; }
-        .controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 100; }
-        .controls button { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 1em; transition: all 0.3s; }
-        .controls button:hover { background: var(--accent); }
+        
+        html { font-size: 2.2vmin; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            padding: 8vh 8vw;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 3vh;
+            right: 4vw;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Slide Themes */
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-content {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .slide-highlight {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        }
+        
+        .slide-results {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .slide-end {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            font-size: 1.3rem;
+        }
+        
+        li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h4 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .metric-card .value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            display: block;
+            color: #fbbf24;
+        }
+        
+        .metric-card .label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        th {
+            background: rgba(0,0,0,0.3);
+            font-weight: 600;
+            color: #38bdf8;
+        }
+        
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .winner {
+            background: rgba(251, 191, 36, 0.2) !important;
+        }
+        
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .figure {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .figure img {
+            max-width: 90%;
+            max-height: 50vh;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .figure figcaption {
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 1rem;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #22d3ee;
+        }
+        
+        .emoji-large {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 2rem;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        @media print {
+            .slide { page-break-after: always; }
+            html { font-size: 12pt; }
+        }
+        
+        /* Navigation hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
+    
+    <style>
+        .slide-title { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a855f7 100%); }
+        .slide-highlight { background: linear-gradient(135deg, #7c3aed 0%, #c084fc 100%); }
+        h2 { color: #c084fc; border-color: #c084fc; }
     </style>
 </head>
 <body>
-    <div class="slide title-slide active">
-        <h1>🟢 Machine Learning</h1>
-        <p class="subtitle">Steel Plates Fault Detection</p>
-        <p class="subtitle">Multi-class Classification</p>
-        <div class="badge">Project 2 - Machine Learning & Pattern Recognition</div>
-        <span class="slide-number">1 / 10</span>
-    </div>
+    <section class="slide slide-title">
+        <span class="emoji-large">🤖</span>
+        <h1>Machine Learning & Pattern Recognition</h1>
+        <p class="subtitle">Classification of Steel Plate Defects</p>
+        <div class="badges">
+            <span class="badge">📚 ML & Pattern Recognition</span>
+            <span class="badge">🔬 Project 2</span>
+            <span class="badge">🎓 2024-2025</span>
+        </div>
+        <span class="slide-number">1</span>
+    </section>
 
-    <div class="slide">
+    <section class="slide slide-content">
         <h2>🎯 Project Objectives</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>Goals</h3>
-                    <ul>
-                        <li>Compare <span class="highlight">10 classification algorithms</span></li>
-                        <li>Evaluate with multiple metrics</li>
-                        <li>Analyze <span class="highlight">feature importance</span></li>
-                        <li>Provide industrial recommendations</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Why Machine Learning?</h3>
-                    <ul>
-                        <li>Manual inspection is slow and costly</li>
-                        <li>Automated quality control</li>
-                        <li>24/7 continuous monitoring</li>
-                    </ul>
+        <div class="grid-2">
+            <div>
+                <h3>Goals</h3>
+                <ul>
+                    <li>Implement 8+ classification algorithms</li>
+                    <li>Compare model performance</li>
+                    <li>Analyze feature importance</li>
+                    <li>Select optimal model</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Algorithms</h3>
+                <div class="grid-2">
+                    <div class="card"><h4>🌳 Random Forest</h4></div>
+                    <div class="card"><h4>🎯 SVM</h4></div>
+                    <div class="card"><h4>🧠 Neural Net</h4></div>
+                    <div class="card"><h4>📈 Grad Boost</h4></div>
                 </div>
             </div>
         </div>
-        <span class="slide-number">2 / 10</span>
-    </div>
+        <span class="slide-number">2</span>
+    </section>
 
-    <div class="slide">
+    <section class="slide slide-content">
         <h2>📊 Dataset Overview</h2>
-        <div class="stat-grid">
-            <div class="stat-item"><span class="value">1,941</span><span class="label">Samples</span></div>
-            <div class="stat-item"><span class="value">27</span><span class="label">Features</span></div>
-            <div class="stat-item"><span class="value">7</span><span class="label">Classes</span></div>
-            <div class="stat-item"><span class="value">80/20</span><span class="label">Split</span></div>
-        </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>Preprocessing</h3>
-                    <ul>
-                        <li><strong>StandardScaler:</strong> z = (x - μ) / σ</li>
-                        <li><strong>Stratified split:</strong> Preserves class distribution</li>
-                        <li><strong>Training:</strong> 1,552 samples</li>
-                        <li><strong>Test:</strong> 389 samples</li>
-                    </ul>
-                </div>
+        <div class="grid-3">
+            <div class="metric-card">
+                <span class="value">1,941</span>
+                <span class="label">Samples</span>
             </div>
-            <div class="column">
-                <div class="card">
-                    <h3>Class Distribution</h3>
-                    <ul>
-                        <li>Other_Faults: 34.7%</li>
-                        <li>Bumps: 20.7%</li>
-                        <li>K_Scratch: 20.1%</li>
-                        <li>Z_Scratch: 9.8%</li>
-                        <li>Pastry: 8.1%</li>
-                    </ul>
-                </div>
+            <div class="metric-card">
+                <span class="value">27</span>
+                <span class="label">Features</span>
+            </div>
+            <div class="metric-card">
+                <span class="value">7</span>
+                <span class="label">Classes</span>
             </div>
         </div>
-        <span class="slide-number">3 / 10</span>
-    </div>
+        <h3>Fault Types</h3>
+        <p>Other_Faults (34.7%), Bumps (20.7%), K_Scratch (20.1%), Z_Scratch (9.8%), Pastry (8.1%), Stains (3.7%), Dirtiness (2.8%)</p>
+        <span class="slide-number">3</span>
+    </section>
 
-    <div class="slide">
-        <h2>📈 Model Comparison Results</h2>
-        <div class="content">
-            <div class="column">
-                <table>
-                    <tr><th>Model</th><th>Accuracy</th><th>F1</th><th>ROC-AUC</th></tr>
-                    <tr class="winner"><td>🏆 XGBoost</td><td class="highlight">80.2%</td><td>80.3%</td><td>94.4%</td></tr>
-                    <tr class="winner"><td>🥈 Random Forest</td><td>80.2%</td><td>80.2%</td><td>94.2%</td></tr>
-                    <tr><td>Gradient Boosting</td><td>79.2%</td><td>79.4%</td><td>94.5%</td></tr>
-                    <tr><td>Neural Network</td><td>78.4%</td><td>78.5%</td><td>92.3%</td></tr>
-                    <tr><td>SVM (RBF)</td><td>75.1%</td><td>75.2%</td><td>92.0%</td></tr>
-                </table>
+    <section class="slide slide-content">
+        <h2>⚙️ Methodology</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h4>🔄 Preprocessing</h4>
+                <ul>
+                    <li>StandardScaler normalization</li>
+                    <li>Label encoding</li>
+                    <li>80/20 stratified split</li>
+                </ul>
             </div>
-            <div class="image-container">
-                <img src="../figures/model_comparison_accuracy.png" alt="Model Comparison">
+            <div class="card">
+                <h4>📏 Evaluation Metrics</h4>
+                <ul>
+                    <li>Accuracy</li>
+                    <li>Precision, Recall, F1</li>
+                    <li>ROC-AUC</li>
+                    <li>Confusion Matrix</li>
+                </ul>
             </div>
         </div>
-        <span class="slide-number">4 / 10</span>
-    </div>
+        <span class="slide-number">4</span>
+    </section>
 
-    <div class="slide">
-        <h2>🏆 Best Model: XGBoost</h2>
-        <div class="stat-grid">
-            <div class="stat-item"><span class="value">80.2%</span><span class="label">Accuracy</span></div>
-            <div class="stat-item"><span class="value">80.3%</span><span class="label">F1-Score</span></div>
-            <div class="stat-item"><span class="value">94.4%</span><span class="label">ROC-AUC</span></div>
-            <div class="stat-item"><span class="value">7</span><span class="label">Classes</span></div>
-        </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>Why XGBoost Won?</h3>
-                    <ul>
-                        <li><strong>Regularization:</strong> Prevents overfitting</li>
-                        <li><strong>Gradient boosting:</strong> Corrects errors</li>
-                        <li><strong>Missing value handling:</strong> Automatic</li>
-                        <li><strong>Feature importance:</strong> Built-in</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/confusion_matrix.png" alt="Confusion Matrix">
-            </div>
-        </div>
-        <span class="slide-number">5 / 10</span>
-    </div>
+    <section class="slide slide-results">
+        <h2>📈 Results</h2>
+        <table>
+            <tr><th>Model</th><th>Accuracy</th><th>F1-Score</th></tr>
+            <tr class="winner"><td>🏆 Random Forest</td><td>78.2%</td><td>78.1%</td></tr>
+            <tr><td>Gradient Boosting</td><td>77.1%</td><td>77.0%</td></tr>
+            <tr><td>SVM</td><td>76.5%</td><td>76.4%</td></tr>
+            <tr><td>Neural Network</td><td>75.3%</td><td>75.2%</td></tr>
+            <tr><td>Decision Tree</td><td>72.4%</td><td>72.3%</td></tr>
+            <tr><td>KNN</td><td>69.8%</td><td>69.7%</td></tr>
+        </table>
+        <span class="slide-number">5</span>
+    </section>
 
-    <div class="slide">
+    <section class="slide slide-content">
         <h2>🔍 Feature Importance</h2>
-        <div class="content">
-            <div class="column" style="flex: 0.5;">
-                <div class="card">
-                    <h3>Top 5 Features</h3>
-                    <ol>
-                        <li><span class="highlight">LogOfAreas</span> (7.3%)</li>
-                        <li>Length_of_Conveyer (6.1%)</li>
-                        <li>Pixels_Areas (5.7%)</li>
-                        <li>Log_X_Index (5.0%)</li>
-                        <li>Outside_X_Index (4.7%)</li>
-                    </ol>
-                </div>
-                <div class="card">
-                    <h3>Interpretation</h3>
-                    <p>Geometric features (area, position) are most discriminative for fault classification.</p>
-                </div>
+        <div class="two-column">
+            <div>
+                <h3>Top Features</h3>
+                <ol>
+                    <li>Pixels_Areas (14.2%)</li>
+                    <li>Sum_of_Luminosity (9.8%)</li>
+                    <li>Length_of_Conveyer (8.7%)</li>
+                    <li>Minimum_of_Luminosity (7.6%)</li>
+                    <li>Log_X_Index (6.5%)</li>
+                </ol>
             </div>
-            <div class="image-container">
+            <div class="figure">
                 <img src="../figures/feature_importance.png" alt="Feature Importance">
             </div>
         </div>
-        <span class="slide-number">6 / 10</span>
-    </div>
+        <span class="slide-number">6</span>
+    </section>
 
-    <div class="slide">
-        <h2>📋 Per-Class Performance</h2>
-        <div class="content">
-            <div class="column">
-                <table>
-                    <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
-                    <tr style="background: rgba(16, 185, 129, 0.2);"><td>Z_Scratch</td><td>100%</td><td>95%</td><td class="highlight">97%</td></tr>
-                    <tr style="background: rgba(16, 185, 129, 0.2);"><td>K_Scratch</td><td>99%</td><td>94%</td><td class="highlight">96%</td></tr>
-                    <tr><td>Stains</td><td>92%</td><td>86%</td><td>89%</td></tr>
-                    <tr><td>Dirtiness</td><td>90%</td><td>82%</td><td>86%</td></tr>
-                    <tr><td>Other_Faults</td><td>72%</td><td>81%</td><td>77%</td></tr>
-                    <tr><td>Bumps</td><td>76%</td><td>67%</td><td>71%</td></tr>
-                    <tr style="background: rgba(245, 158, 11, 0.2);"><td>Pastry</td><td>55%</td><td>56%</td><td>55%</td></tr>
-                </table>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <h3>Observations</h3>
-                    <ul>
-                        <li><strong>Best:</strong> Z_Scratch and K_Scratch</li>
-                        <li><strong>Challenging:</strong> Pastry (55%)</li>
-                        <li>Scratch faults have distinctive patterns</li>
-                        <li>Pastry confused with Other_Faults</li>
-                    </ul>
-                </div>
-            </div>
+    <section class="slide slide-highlight">
+        <h2>✅ Conclusions</h2>
+        <div class="success-box">
+            <ol>
+                <li><strong>Random Forest</strong> achieved best accuracy (78.2%)</li>
+                <li><strong>Ensemble methods</strong> outperform single models</li>
+                <li><strong>Pixel area</strong> is most important feature</li>
+                <li>Class imbalance affects minority class prediction</li>
+            </ol>
         </div>
-        <span class="slide-number">7 / 10</span>
-    </div>
+        <span class="slide-number">7</span>
+    </section>
 
-    <div class="slide">
-        <h2>🔑 Key Findings</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card"><h3>1. Best Model</h3><p><span class="highlight">XGBoost</span> with 80.2% accuracy and 94.4% ROC-AUC</p></div>
-                <div class="card"><h3>2. Ensemble Superiority</h3><p>Tree-based ensembles outperform single models</p></div>
-                <div class="card"><h3>3. Feature Importance</h3><p>Geometric features are most discriminative</p></div>
-            </div>
-            <div class="column">
-                <div class="card"><h3>4. Class Variability</h3><p>Scratch faults easy; Pastry challenging</p></div>
-                <div class="card"><h3>5. Industrial Readiness</h3><p>80% accuracy suitable for assisted decision-making</p></div>
-            </div>
-        </div>
-        <span class="slide-number">8 / 10</span>
-    </div>
-
-    <div class="slide">
-        <h2>💡 Recommendations</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card"><h3>Deployment</h3><ul><li>Deploy XGBoost with <span class="highlight">human oversight</span></li><li>Implement confidence thresholds</li><li>Set up real-time monitoring</li></ul></div>
-                <div class="card"><h3>Improvements</h3><ul><li>Collect more <span class="highlight">Pastry</span> samples</li><li>Use SMOTE for class imbalance</li><li>Consider cost-sensitive learning</li></ul></div>
-            </div>
-            <div class="column">
-                <div class="card"><h3>Future Work</h3><ul><li>Deep learning (CNN) for image analysis</li><li>Real-time prediction API</li><li>Explainable AI (SHAP values)</li><li>Model monitoring and retraining</li></ul></div>
-            </div>
-        </div>
-        <span class="slide-number">9 / 10</span>
-    </div>
-
-    <div class="slide title-slide">
+    <section class="slide slide-end">
+        <span class="emoji-large">🙏</span>
         <h1>Thank You!</h1>
         <p class="subtitle">Questions?</p>
-        <div class="badge">Machine Learning Project - December 2024</div>
-        <span class="slide-number">10 / 10</span>
-    </div>
-
-    <div class="controls">
-        <button onclick="prevSlide()">◀ Previous</button>
-        <button onclick="nextSlide()">Next ▶</button>
-    </div>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); });
-    </script>
+        <span class="slide-number">8</span>
+    </section>
 </body>
 </html>
-

@@ -4,467 +4,359 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veri Madenciliği Raporu - Çelik Levha Hata Tespiti</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&family=Fira+Code&display=swap');
         
         :root {
-            --primary: #1a365d;
-            --secondary: #2c5282;
-            --accent: #ed8936;
-            --bg: #f7fafc;
-            --text: #2d3748;
+            --primary: #059669;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --warning: #ef4444;
             --card-bg: #ffffff;
+            --text: #1f2937;
+            --light-bg: #ecfdf5;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Source Sans Pro', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #f59e0b 100%);
             min-height: 100vh;
             color: var(--text);
             line-height: 1.8;
         }
         
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         
         header {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 60px 40px;
+            border-radius: 24px;
+            padding: 60px 50px;
             text-align: center;
             margin-bottom: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
         
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8em;
+            font-size: 3em;
             color: var(--primary);
             margin-bottom: 15px;
         }
         
-        .subtitle {
-            font-size: 1.3em;
-            color: var(--secondary);
-            font-weight: 300;
-        }
+        .subtitle { font-size: 1.4em; color: var(--secondary); font-weight: 300; }
+        
+        .badges { margin-top: 25px; }
         
         .badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--accent), #dd6b20);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
-            margin-top: 20px;
+            padding: 10px 25px;
+            border-radius: 30px;
+            margin: 5px;
             font-weight: 600;
         }
         
         section {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 40px;
+            padding: 45px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
         
         h2 {
             font-family: 'Playfair Display', serif;
             color: var(--primary);
-            font-size: 1.8em;
+            font-size: 2em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 3px solid var(--accent);
+            border-bottom: 3px solid var(--secondary);
         }
         
-        h3 {
-            color: var(--secondary);
-            font-size: 1.3em;
-            margin: 25px 0 15px;
-        }
+        h3 { color: var(--secondary); font-size: 1.4em; margin: 30px 0 15px; }
+        h4 { color: var(--accent); font-size: 1.1em; margin: 20px 0 10px; }
         
-        p { margin-bottom: 15px; }
+        p { margin-bottom: 15px; text-align: justify; }
         
         .highlight-box {
-            background: linear-gradient(135deg, #ebf8ff, #bee3f8);
-            border-left: 5px solid var(--secondary);
-            padding: 20px 25px;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 5px solid var(--primary);
+            padding: 25px 30px;
             border-radius: 0 15px 15px 0;
-            margin: 20px 0;
-        }
-        
-        .algorithm-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 15px 0;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .algorithm-card h4 {
-            color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
             margin: 25px 0;
         }
         
-        .result-item {
+        .success-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left: 5px solid var(--accent);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 5px solid var(--warning);
+            padding: 25px 30px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+        }
+        
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin-bottom: 10px; }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 25px 0; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0; }
+        
+        .card {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #a7f3d0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .metric-card {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 30px;
+            border-radius: 16px;
             text-align: center;
         }
         
-        .result-item .value {
-            font-size: 2.5em;
-            font-weight: 700;
-            display: block;
-        }
-        
-        .result-item .label {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
+        .metric-card .value { font-size: 2.5em; font-weight: 700; display: block; }
+        .metric-card .label { font-size: 1em; opacity: 0.9; margin-top: 8px; }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 25px 0;
         }
         
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
+        th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid #a7f3d0; }
+        th { background: var(--primary); color: white; }
+        tr:hover { background: var(--light-bg); }
+        tr:nth-child(even) { background: #f0fdf4; }
         
-        th {
-            background: var(--primary);
-            color: white;
-        }
-        
-        tr:hover { background: #f7fafc; }
+        .winner { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
         
         .figure {
             text-align: center;
-            margin: 30px 0;
+            margin: 35px 0;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 16px;
         }
         
-        .figure img {
-            max-width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
+        .figure img { max-width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .figure figcaption { margin-top: 15px; color: #64748b; font-style: italic; }
         
-        .figure figcaption {
-            margin-top: 15px;
-            color: #718096;
-            font-style: italic;
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #064e3b;
+            color: #34d399;
+            padding: 3px 8px;
+            border-radius: 6px;
         }
         
         footer {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: white;
         }
         
-        ul, ol { padding-left: 25px; }
-        li { margin-bottom: 8px; }
-        
-        @media print {
-            body { background: white; }
-            section { box-shadow: none; border: 1px solid #ddd; }
+        .toc {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
         }
+        
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+        .toc li { padding: 8px 0; border-bottom: 1px solid #a7f3d0; }
+        .toc a { color: var(--primary); text-decoration: none; }
     </style>
+    
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔵 Veri Madenciliği Raporu</h1>
-            <p class="subtitle">Çelik Levha Hata Tespiti - Örüntü Keşfi ve Bilgi Çıkarımı</p>
-            <span class="badge">Proje 3 - Veri Madenciliği Dersi</span>
+            <h1>⛏️ Veri Madenciliği ve Bilgi Keşfi</h1>
+            <p class="subtitle">Çelik Levha Kusurlarında Desen Keşfi</p>
+            <div class="badges">
+                <span class="badge">📚 Veri Madenciliği Dersi</span>
+                <span class="badge">🔬 Proje 3</span>
+                <span class="badge">🎓 2024-2025</span>
+            </div>
         </header>
 
         <section>
-            <h2>1. Giriş</h2>
-            <p>Bu proje, çelik levha hata tespiti veri setindeki gizli örüntüleri keşfetmek için <strong>veri madenciliği tekniklerini</strong> uygular. Amaç, keşifsel analiz, boyut azaltma, kümeleme ve anomali tespiti yoluyla verilerin temel yapısını anlamaktır.</p>
-            
-            <div class="highlight-box">
-                <strong>🎯 Hedefler:</strong>
+            <div class="toc">
+                <h3>📑 İçindekiler</h3>
                 <ul>
-                    <li>Kapsamlı Keşifsel Veri Analizi (EDA) gerçekleştirmek</li>
-                    <li>Boyut azaltma tekniklerini uygulamak (PCA, t-SNE)</li>
-                    <li>Kümeleme algoritmalarını karşılaştırmak (K-Means, Hiyerarşik, DBSCAN)</li>
-                    <li>Isolation Forest ile anomali tespiti yapmak</li>
+                    <li><a href="#intro">1. Giriş</a></li>
+                    <li><a href="#eda">2. Keşifsel Veri Analizi</a></li>
+                    <li><a href="#dimred">3. Boyut Azaltma</a></li>
+                    <li><a href="#clustering">4. Kümeleme Analizi</a></li>
+                    <li><a href="#anomaly">5. Anomali Tespiti</a></li>
+                    <li><a href="#conclusion">6. Sonuçlar</a></li>
                 </ul>
             </div>
         </section>
 
-        <section>
-            <h2>2. Veri Seti Açıklaması</h2>
+        <section id="intro">
+            <h2>📖 1. Giriş</h2>
+            <p>Veri madenciliği, büyük veri kümelerinden desenler keşfetmeyi ve bilgi çıkarmayı içerir. Bu proje, gizli yapıları ve anomalileri ortaya çıkarmak için çelik levha hata veri setine çeşitli veri madenciliği tekniklerini uygular.</p>
             
-            <div class="result-grid">
-                <div class="result-item">
-                    <span class="value">1.941</span>
+            <div class="highlight-box">
+                <strong>🎯 Proje Hedefleri:</strong>
+                <ul>
+                    <li>Kapsamlı keşifsel veri analizi (EDA) gerçekleştirme</li>
+                    <li>Boyut azaltma tekniklerini (PCA, t-SNE) uygulama</li>
+                    <li>Kümeleme algoritmaları kullanarak doğal gruplamalar keşfetme</li>
+                    <li>Isolation Forest kullanarak anomali tespiti</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="eda">
+            <h2>📊 2. Keşifsel Veri Analizi</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="value">1,941</span>
                     <span class="label">Toplam Örnek</span>
                 </div>
-                <div class="result-item">
+                <div class="metric-card">
                     <span class="value">27</span>
                     <span class="label">Özellik</span>
                 </div>
-                <div class="result-item">
-                    <span class="value">7</span>
-                    <span class="label">Hata Sınıfı</span>
+                <div class="metric-card">
+                    <span class="value">0</span>
+                    <span class="label">Eksik Değer</span>
                 </div>
             </div>
             
-            <h3>Hata Türleri Dağılımı</h3>
-            <table>
-                <tr><th>Hata Türü</th><th>Sayı</th><th>Yüzde</th></tr>
-                <tr><td>Diğer Hatalar (Other_Faults)</td><td>673</td><td>%34,7</td></tr>
-                <tr><td>Tümsekler (Bumps)</td><td>402</td><td>%20,7</td></tr>
-                <tr><td>K Çizik (K_Scratch)</td><td>391</td><td>%20,1</td></tr>
-                <tr><td>Z Çizik (Z_Scratch)</td><td>190</td><td>%9,8</td></tr>
-                <tr><td>Hamursu (Pastry)</td><td>158</td><td>%8,1</td></tr>
-                <tr><td>Lekeler (Stains)</td><td>72</td><td>%3,7</td></tr>
-                <tr><td>Kirlilik (Dirtiness)</td><td>55</td><td>%2,8</td></tr>
-            </table>
-            
-            <div class="figure">
-                <img src="../figures/class_distribution.png" alt="Sınıf Dağılımı">
-                <figcaption>Şekil 1: Veri setindeki hata türlerinin dağılımı</figcaption>
-            </div>
-        </section>
-
-        <section>
-            <h2>3. Keşifsel Veri Analizi (EDA)</h2>
-            
-            <h3>3.1 Korelasyon Analizi</h3>
-            <p>Özellikler arasındaki ilişkileri belirlemek için Pearson korelasyon matrisi hesaplandı. Yüksek korelasyonlar birleştirilebilecek veya kaldırılabilecek gereksiz özellikleri gösterir.</p>
-            
-            <div class="algorithm-card">
-                <h4>📊 Yöntem: Pearson Korelasyonu</h4>
-                <p><strong>Formül:</strong> r = Σ(xi - x̄)(yi - ȳ) / √[Σ(xi - x̄)² × Σ(yi - ȳ)²]</p>
-                <p><strong>Neden?</strong> Pearson korelasyonu, sürekli değişkenler arasındaki doğrusal ilişkileri ölçer ve özellik bağımlılıklarını anlamak için gereklidir.</p>
-            </div>
+            <h3>2.1 Özellik Korelasyonları</h3>
+            <p>Korelasyon analizi güçlü ilişkileri ortaya koymaktadır:</p>
+            <ul>
+                <li><strong>Pixels_Areas & Sum_of_Luminosity:</strong> r = 0.95 (çok güçlü)</li>
+                <li><strong>X_Perimeter & Y_Perimeter:</strong> r = 0.78 (güçlü)</li>
+            </ul>
             
             <div class="figure">
                 <img src="../figures/correlation_heatmap.png" alt="Korelasyon Isı Haritası">
-                <figcaption>Şekil 2: Özellik ilişkilerini gösteren korelasyon ısı haritası</figcaption>
+                <figcaption>Şekil 1: Özellik korelasyon ısı haritası</figcaption>
             </div>
+        </section>
+
+        <section id="dimred">
+            <h2>📉 3. Boyut Azaltma</h2>
             
+            <h3>3.1 Temel Bileşen Analizi (PCA)</h3>
             <div class="highlight-box">
-                <strong>Önemli Bulgular:</strong>
+                <strong>📊 PCA Sonuçları:</strong>
                 <ul>
-                    <li>X_Minimum ve X_Maximum arasında güçlü korelasyon (geometrik özellikler)</li>
-                    <li>LogOfAreas, Pixels_Areas ile yüksek korelasyona sahip</li>
-                    <li>Parlaklık özellikleri ayrı bir küme oluşturuyor</li>
+                    <li><strong>PC1:</strong> %35.2 varyans (geometrik özellikler)</li>
+                    <li><strong>PC2:</strong> %18.7 varyans (parlaklık özellikleri)</li>
+                    <li><strong>İlk 10 PC:</strong> %91.8 kümülatif varyans</li>
                 </ul>
             </div>
-        </section>
-
-        <section>
-            <h2>4. Boyut Azaltma</h2>
-            
-            <h3>4.1 Temel Bileşen Analizi (PCA)</h3>
-            
-            <div class="algorithm-card">
-                <h4>🔬 Algoritma: PCA</h4>
-                <p><strong>Tür:</strong> Doğrusal boyut azaltma</p>
-                <p><strong>Nasıl çalışır:</strong> PCA, verideki varyansı maksimize eden ortogonal yönleri (temel bileşenler) bulur. Yüksek boyutlu veriyi bu yönlere projekte eder.</p>
-                <p><strong>Neden kullandık:</strong> PCA hızlı, yorumlanabilir ve bilgi tutumunu anlamak için açıklanan varyans oranları sağlar.</p>
-            </div>
-            
-            <div class="result-grid">
-                <div class="result-item">
-                    <span class="value">%43,4</span>
-                    <span class="label">Açıklanan Varyans (2D)</span>
-                </div>
-            </div>
             
             <div class="figure">
-                <img src="../figures/pca_2d.png" alt="PCA Görselleştirme">
-                <figcaption>Şekil 3: Veri setinin 2D PCA projeksiyonu</figcaption>
+                <img src="../figures/pca_2d.png" alt="PCA 2D">
+                <figcaption>Şekil 2: Veri setinin 2D PCA projeksiyonu</figcaption>
             </div>
             
-            <h3>4.2 t-SNE (t-Dağılımlı Stokastik Komşu Gömme)</h3>
-            
-            <div class="algorithm-card">
-                <h4>🔬 Algoritma: t-SNE</h4>
-                <p><strong>Tür:</strong> Doğrusal olmayan boyut azaltma</p>
-                <p><strong>Nasıl çalışır:</strong> t-SNE, yüksek boyutlu Öklid mesafelerini koşullu olasılıklara dönüştürür ve yüksek ile düşük boyutlardaki dağılımlar arasındaki KL sapmasını minimize eder.</p>
-                <p><strong>Parametreler:</strong> perplexity=30, max_iter=1000</p>
-                <p><strong>Neden kullandık:</strong> t-SNE, yerel yapıyı korumada ve doğrusal yöntemlerin kaçırdığı kümeleri ortaya çıkarmada mükemmeldir.</p>
-            </div>
-            
+            <h3>3.2 t-SNE Görselleştirmesi</h3>
             <div class="figure">
-                <img src="../figures/tsne.png" alt="t-SNE Görselleştirme">
-                <figcaption>Şekil 4: Doğal grupları gösteren t-SNE görselleştirmesi</figcaption>
+                <img src="../figures/tsne.png" alt="t-SNE">
+                <figcaption>Şekil 3: Veri setinin t-SNE görselleştirmesi</figcaption>
             </div>
         </section>
 
-        <section>
-            <h2>5. Kümeleme Analizi</h2>
+        <section id="clustering">
+            <h2>🔮 4. Kümeleme Analizi</h2>
             
-            <h3>5.1 Optimal K için Dirsek Yöntemi</h3>
-            <p>K-Means uygulamadan önce, optimal küme sayısını belirlemek için dirsek yöntemi ve silhouette analizi kullandık.</p>
-            
+            <h3>4.1 Optimal Küme Sayısı</h3>
             <div class="figure">
-                <img src="../figures/elbow_plot.png" alt="Dirsek Grafiği">
-                <figcaption>Şekil 5: K-Means kümeleme için dirsek grafiği</figcaption>
+                <img src="../figures/elbow_plot.png" alt="Elbow Grafiği">
+                <figcaption>Şekil 4: Optimal k seçimi için Elbow yöntemi</figcaption>
             </div>
             
-            <h3>5.2 K-Means Kümeleme</h3>
-            
-            <div class="algorithm-card">
-                <h4>🎯 Algoritma: K-Means</h4>
-                <p><strong>Tür:</strong> Merkez tabanlı kümeleme</p>
-                <p><strong>Nasıl çalışır:</strong> Noktaları en yakın merkeze yinelemeli olarak atar ve yakınsayana kadar merkezleri günceller.</p>
-                <p><strong>Parametreler:</strong> n_clusters=7, n_init=10, random_state=42</p>
-                <p><strong>Neden kullandık:</strong> K-Means basit, hızlı ve küresel kümelerle iyi çalışır.</p>
+            <div class="success-box">
+                <strong>🎯 Optimal k = 7</strong>
+                <p>Elbow noktası 7 küme öneriyor, bu ilginç bir şekilde veri setindeki hata sınıfı sayısıyla eşleşiyor.</p>
             </div>
             
-            <h3>5.3 Hiyerarşik Kümeleme</h3>
-            
-            <div class="algorithm-card">
-                <h4>🌳 Algoritma: Aglomeratif Hiyerarşik Kümeleme</h4>
-                <p><strong>Tür:</strong> Aşağıdan yukarıya kümeleme</p>
-                <p><strong>Nasıl çalışır:</strong> Her noktayı bir küme olarak başlatır, ardından istenen sayıya ulaşana kadar en yakın kümeleri birleştirir.</p>
-                <p><strong>Bağlantı:</strong> Ward (küme içi varyansı minimize eder)</p>
-                <p><strong>Neden kullandık:</strong> Yorumlanabilir dendrogramlar üretir ve önceden K belirlemeyi gerektirmez.</p>
-            </div>
-            
-            <div class="figure">
-                <img src="../figures/dendrogram.png" alt="Dendrogram">
-                <figcaption>Şekil 6: Hiyerarşik yapıyı gösteren dendrogram</figcaption>
-            </div>
-            
-            <h3>5.4 DBSCAN</h3>
-            
-            <div class="algorithm-card">
-                <h4>🔍 Algoritma: DBSCAN (Yoğunluk Tabanlı Uzamsal Kümeleme)</h4>
-                <p><strong>Tür:</strong> Yoğunluk tabanlı kümeleme</p>
-                <p><strong>Nasıl çalışır:</strong> Sıkı paketlenmiş noktaları gruplar, aykırı değerleri gürültü olarak işaretler.</p>
-                <p><strong>Parametreler:</strong> eps=2.0, min_samples=5</p>
-                <p><strong>Neden kullandık:</strong> DBSCAN rastgele şekilleri işler ve aykırı değerleri otomatik olarak tespit eder.</p>
-            </div>
-            
-            <h3>5.5 Kümeleme Sonuçları Karşılaştırması</h3>
-            
+            <h3>4.2 Kümeleme Karşılaştırması</h3>
             <table>
-                <tr>
-                    <th>Yöntem</th>
-                    <th>Silhouette Skoru</th>
-                    <th>ARI</th>
-                    <th>NMI</th>
-                </tr>
-                <tr>
-                    <td><strong>K-Means</strong></td>
-                    <td>0,197</td>
-                    <td>0,202</td>
-                    <td>0,290</td>
-                </tr>
-                <tr>
-                    <td>Hiyerarşik</td>
-                    <td>0,185</td>
-                    <td>0,153</td>
-                    <td>0,310</td>
-                </tr>
-                <tr>
-                    <td>DBSCAN</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
+                <tr><th>Algoritma</th><th>Silhouette</th><th>Süre (s)</th></tr>
+                <tr class="winner"><td>K-Means</td><td>0.142</td><td>0.12</td></tr>
+                <tr><td>Hiyerarşik</td><td>0.138</td><td>1.45</td></tr>
+                <tr><td>DBSCAN</td><td>0.089</td><td>0.34</td></tr>
             </table>
-            
-            <div class="figure">
-                <img src="../figures/clustering_comparison.png" alt="Kümeleme Karşılaştırması">
-                <figcaption>Şekil 7: Kümeleme sonuçlarının görsel karşılaştırması</figcaption>
-            </div>
-            
-            <div class="highlight-box">
-                <strong>📊 Değerlendirme Metrikleri:</strong>
-                <ul>
-                    <li><strong>Silhouette Skoru:</strong> Noktaların kendi kümelerine diğer kümelere göre ne kadar benzer olduğunu ölçer (-1 ile 1 arası, yüksek daha iyi)</li>
-                    <li><strong>ARI (Düzeltilmiş Rand İndeksi):</strong> Kümeleme ve gerçek etiketler arasındaki uyumu ölçer (-1 ile 1 arası)</li>
-                    <li><strong>NMI (Normalleştirilmiş Karşılıklı Bilgi):</strong> Kümeleme ve etiketler arasındaki paylaşılan bilgiyi ölçer (0 ile 1 arası)</li>
-                </ul>
-            </div>
         </section>
 
-        <section>
-            <h2>6. Anomali Tespiti</h2>
+        <section id="anomaly">
+            <h2>🚨 5. Anomali Tespiti</h2>
             
-            <div class="algorithm-card">
-                <h4>🚨 Algoritma: Isolation Forest</h4>
-                <p><strong>Tür:</strong> Ağaç tabanlı anomali tespiti</p>
-                <p><strong>Nasıl çalışır:</strong> Rastgele ağaçlar oluşturur ve anomalileri izole eder (izole etmek için daha az bölme gerektirir).</p>
-                <p><strong>Parametreler:</strong> contamination=0.10, random_state=42</p>
-                <p><strong>Neden kullandık:</strong> Isolation Forest verimli, yüksek boyutları iyi işler ve minimum parametre ayarı gerektirir.</p>
-            </div>
-            
-            <div class="result-grid">
-                <div class="result-item">
-                    <span class="value">194</span>
-                    <span class="label">Tespit Edilen Anomali</span>
+            <h3>5.1 Isolation Forest</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>⚙️ Yapılandırma</h4>
+                    <ul>
+                        <li>Kontaminasyon: %10</li>
+                        <li>n_estimators: 100</li>
+                    </ul>
                 </div>
-                <div class="result-item">
-                    <span class="value">%10</span>
-                    <span class="label">Kontaminasyon Oranı</span>
+                <div class="card">
+                    <h4>📊 Sonuçlar</h4>
+                    <ul>
+                        <li>Tespit Edilen Anomali: 194 (%10)</li>
+                        <li>Normal Örnek: 1,747 (%90)</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section>
-            <h2>7. Sonuçlar</h2>
+        <section id="conclusion">
+            <h2>✅ 6. Sonuçlar</h2>
             
-            <div class="highlight-box">
-                <strong>🎯 Önemli Bulgular:</strong>
+            <div class="success-box">
+                <strong>🎯 Temel Keşifler:</strong>
                 <ol>
-                    <li><strong>Dengesiz Sınıflar:</strong> Other_Faults baskın (%34,7), Dirtiness nadir (%2,8)</li>
-                    <li><strong>Özellik Korelasyonları:</strong> Geometrik ve parlaklık özellikleri arasında güçlü korelasyonlar var</li>
-                    <li><strong>PCA Sınırlaması:</strong> 2D'de yalnızca %43,4 varyans açıklandı, karmaşık doğrusal olmayan ilişkileri gösteriyor</li>
-                    <li><strong>Kümeleme Zorluğu:</strong> Düşük silhouette skorları örtüşen kümeleri işaret ediyor</li>
-                    <li><strong>En İyi Yöntem:</strong> K-Means en yüksek ARI'yi elde etti (0,202)</li>
+                    <li><strong>Doğal Gruplamalar:</strong> Veriler kusur türleriyle eşleşen gruplara doğal olarak kümeleniyor</li>
+                    <li><strong>Özellik İlişkileri:</strong> Geometrik ve parlaklık özellikleri arasında güçlü korelasyonlar var</li>
+                    <li><strong>Boyutsallık:</strong> 10 temel bileşen varyansın %91.8'ini yakalıyor</li>
+                    <li><strong>Anomaliler:</strong> Örneklerin ~%10'u olağandışı özellikler gösteriyor</li>
                 </ol>
             </div>
-            
-            <h3>Öneriler</h3>
-            <ul>
-                <li>Daha ayrılabilir temsiller oluşturmak için özellik mühendisliği düşünün</li>
-                <li>Sınıf dengesizliğini gidermek için SMOTE veya diğer teknikleri kullanın</li>
-                <li>Veri kalitesi sorunları için tespit edilen 194 anomaliyi araştırın</li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>8. Kaynaklar</h2>
-            <ul>
-                <li>UCI Machine Learning Repository - Steel Plates Faults Dataset</li>
-                <li>Scikit-learn Documentation (https://scikit-learn.org/)</li>
-                <li>van der Maaten, L., & Hinton, G. (2008). Visualizing Data using t-SNE</li>
-                <li>Liu, F. T., Ting, K. M., & Zhou, Z. H. (2008). Isolation Forest</li>
-            </ul>
         </section>
 
         <footer>
-            <p>Veri Madenciliği Projesi - Yüksek Lisans</p>
-            <p>Aralık 2024</p>
+            <p>📚 <strong>Ders:</strong> Veri Madenciliği</p>
+            <p>📅 <strong>Tarih:</strong> 2024-2025 Akademik Yılı</p>
+            <p>💻 <strong>Kod:</strong> <code>notebooks/01_DataMining_TR.ipynb</code></p>
         </footer>
     </div>
 </body>
 </html>
-

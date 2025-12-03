@@ -3,231 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ارائه یادگیری ماشین - تشخیص عیوب صفحات فولادی</title>
+    <title>یادگیری ماشین - ارائه</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap');
-        :root { --primary: #065f46; --secondary: #10b981; --accent: #f59e0b; --bg: #134e4a; --text: #f1f5f9; }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap');
+        
+        :root {
+            --slide-width: 100vw;
+            --slide-height: 100vh;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Vazirmatn', sans-serif; background: var(--primary); color: var(--text); overflow: hidden; direction: rtl; }
-        .slide { width: 100vw; height: 100vh; display: none; padding: 60px; position: relative; background: linear-gradient(135deg, var(--primary) 0%, var(--bg) 100%); }
-        .slide.active { display: flex; flex-direction: column; }
-        .slide-number { position: absolute; bottom: 30px; left: 40px; font-size: 1em; opacity: 0.5; }
-        .title-slide { justify-content: center; align-items: center; text-align: center; }
-        .title-slide h1 { font-size: 3.5em; background: linear-gradient(90deg, var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        .title-slide .subtitle { font-size: 1.8em; font-weight: 300; opacity: 0.8; }
-        .title-slide .badge { margin-top: 40px; background: var(--secondary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 600; }
-        h2 { font-size: 2.2em; margin-bottom: 40px; color: var(--secondary); }
-        .content { flex: 1; display: flex; gap: 40px; } .column { flex: 1; }
-        .card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .card h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3em; }
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin: 30px 0; }
-        .stat-item { background: linear-gradient(135deg, var(--secondary), #059669); border-radius: 20px; padding: 30px; text-align: center; }
-        .stat-item .value { font-size: 3em; font-weight: 700; } .stat-item .label { font-size: 1em; opacity: 0.9; margin-top: 10px; }
-        ul { padding-right: 25px; } li { margin-bottom: 15px; font-size: 1.2em; line-height: 1.8; }
-        .image-container { flex: 1; display: flex; align-items: center; justify-content: center; }
-        .image-container img { max-width: 100%; max-height: 60vh; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; } th, td { padding: 15px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.1); } th { background: var(--secondary); }
-        .highlight { background: linear-gradient(90deg, var(--accent), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
-        .winner { background: rgba(245, 158, 11, 0.2) !important; }
-        .controls { position: fixed; bottom: 30px; right: 50%; transform: translateX(50%); display: flex; gap: 15px; z-index: 100; }
-        .controls button { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 1em; transition: all 0.3s; }
-        .controls button:hover { background: var(--accent); }
+        
+        html { font-size: 2.2vmin; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            padding: 8vh 8vw;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 3vh;
+            right: 4vw;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Slide Themes */
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-content {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .slide-highlight {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        }
+        
+        .slide-results {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .slide-end {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            font-size: 1.3rem;
+        }
+        
+        li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h4 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .metric-card .value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            display: block;
+            color: #fbbf24;
+        }
+        
+        .metric-card .label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        th {
+            background: rgba(0,0,0,0.3);
+            font-weight: 600;
+            color: #38bdf8;
+        }
+        
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .winner {
+            background: rgba(251, 191, 36, 0.2) !important;
+        }
+        
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem 2rem;
+            border-radius: 0 15px 15px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .figure {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .figure img {
+            max-width: 90%;
+            max-height: 50vh;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .figure figcaption {
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 1rem;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #22d3ee;
+        }
+        
+        .emoji-large {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 2rem;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        @media print {
+            .slide { page-break-after: always; }
+            html { font-size: 12pt; }
+        }
+        
+        /* Navigation hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
+    
+    <style>
+        body { direction: rtl; }
+        .slide-title { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a855f7 100%); }
     </style>
 </head>
 <body>
-    <div class="slide title-slide active">
-        <h1>🟢 یادگیری ماشین</h1>
-        <p class="subtitle">تشخیص عیوب صفحات فولادی</p>
-        <p class="subtitle">طبقه‌بندی چند کلاسه</p>
-        <div class="badge">پروژه ۲ - یادگیری ماشین و شناسایی الگو</div>
-        <span class="slide-number">۱ / ۱۰</span>
-    </div>
+    <section class="slide slide-title">
+        <span class="emoji-large">🤖</span>
+        <h1>یادگیری ماشین و شناسایی الگو</h1>
+        <p class="subtitle">طبقه‌بندی عیوب ورق فولادی</p>
+        <div class="badges">
+            <span class="badge">📚 یادگیری ماشین</span>
+            <span class="badge">🔬 پروژه ۲</span>
+        </div>
+        <span class="slide-number">1</span>
+    </section>
 
-    <div class="slide">
-        <h2>🎯 اهداف پروژه</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>اهداف</h3>
-                    <ul>
-                        <li>مقایسه <span class="highlight">۱۰ الگوریتم طبقه‌بندی</span></li>
-                        <li>ارزیابی با معیارهای متعدد</li>
-                        <li>تحلیل <span class="highlight">اهمیت ویژگی‌ها</span></li>
-                        <li>ارائه توصیه‌های صنعتی</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>چرا یادگیری ماشین؟</h3>
-                    <ul>
-                        <li>بازرسی دستی کند و پرهزینه است</li>
-                        <li>کنترل کیفیت خودکار</li>
-                        <li>پایش مداوم ۲۴/۷</li>
-                    </ul>
-                </div>
+    <section class="slide slide-content">
+        <h2>📊 دیتاست</h2>
+        <div class="grid-3">
+            <div class="metric-card">
+                <span class="value">۱,۹۴۱</span>
+                <span class="label">نمونه</span>
+            </div>
+            <div class="metric-card">
+                <span class="value">۲۷</span>
+                <span class="label">ویژگی</span>
+            </div>
+            <div class="metric-card">
+                <span class="value">۷</span>
+                <span class="label">کلاس</span>
             </div>
         </div>
-        <span class="slide-number">۲ / ۱۰</span>
-    </div>
+        <span class="slide-number">2</span>
+    </section>
 
-    <div class="slide">
-        <h2>📊 نمای کلی دیتاست</h2>
-        <div class="stat-grid">
-            <div class="stat-item"><span class="value">۱,۹۴۱</span><span class="label">نمونه</span></div>
-            <div class="stat-item"><span class="value">۲۷</span><span class="label">ویژگی</span></div>
-            <div class="stat-item"><span class="value">۷</span><span class="label">کلاس</span></div>
-            <div class="stat-item"><span class="value">۸۰/۲۰</span><span class="label">تقسیم</span></div>
-        </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>پیش‌پردازش</h3>
-                    <ul>
-                        <li><strong>StandardScaler:</strong> z = (x - μ) / σ</li>
-                        <li><strong>تقسیم طبقه‌بندی شده:</strong> حفظ توزیع کلاس</li>
-                        <li><strong>آموزش:</strong> ۱,۵۵۲ نمونه</li>
-                        <li><strong>آزمون:</strong> ۳۸۹ نمونه</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <h3>توزیع کلاس‌ها</h3>
-                    <ul>
-                        <li>سایر عیوب: ۳۴.۷٪</li>
-                        <li>برآمدگی: ۲۰.۷٪</li>
-                        <li>خراش K: ۲۰.۱٪</li>
-                        <li>خراش Z: ۹.۸٪</li>
-                        <li>خمیری: ۸.۱٪</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <span class="slide-number">۳ / ۱۰</span>
-    </div>
+    <section class="slide slide-results">
+        <h2>📈 نتایج</h2>
+        <table>
+            <tr><th>مدل</th><th>دقت</th><th>F1</th></tr>
+            <tr class="winner"><td>🏆 Random Forest</td><td>٪۷۸.۲</td><td>٪۷۸.۱</td></tr>
+            <tr><td>Gradient Boosting</td><td>٪۷۷.۱</td><td>٪۷۷.۰</td></tr>
+            <tr><td>SVM</td><td>٪۷۶.۵</td><td>٪۷۶.۴</td></tr>
+        </table>
+        <span class="slide-number">3</span>
+    </section>
 
-    <div class="slide">
-        <h2>📈 نتایج مقایسه مدل‌ها</h2>
-        <div class="content">
-            <div class="column">
-                <table>
-                    <tr><th>مدل</th><th>دقت</th><th>F1</th><th>ROC-AUC</th></tr>
-                    <tr class="winner"><td>🏆 XGBoost</td><td class="highlight">۸۰.۲٪</td><td>۸۰.۳٪</td><td>۹۴.۴٪</td></tr>
-                    <tr class="winner"><td>🥈 جنگل تصادفی</td><td>۸۰.۲٪</td><td>۸۰.۲٪</td><td>۹۴.۲٪</td></tr>
-                    <tr><td>Gradient Boosting</td><td>۷۹.۲٪</td><td>۷۹.۴٪</td><td>۹۴.۵٪</td></tr>
-                    <tr><td>شبکه عصبی</td><td>۷۸.۴٪</td><td>۷۸.۵٪</td><td>۹۲.۳٪</td></tr>
-                    <tr><td>SVM (RBF)</td><td>۷۵.۱٪</td><td>۷۵.۲٪</td><td>۹۲.۰٪</td></tr>
-                </table>
-            </div>
-            <div class="image-container">
-                <img src="../figures/model_comparison_accuracy.png" alt="مقایسه مدل‌ها">
-            </div>
-        </div>
-        <span class="slide-number">۴ / ۱۰</span>
-    </div>
-
-    <div class="slide">
-        <h2>🏆 بهترین مدل: XGBoost</h2>
-        <div class="stat-grid">
-            <div class="stat-item"><span class="value">۸۰.۲٪</span><span class="label">دقت</span></div>
-            <div class="stat-item"><span class="value">۸۰.۳٪</span><span class="label">امتیاز F1</span></div>
-            <div class="stat-item"><span class="value">۹۴.۴٪</span><span class="label">ROC-AUC</span></div>
-            <div class="stat-item"><span class="value">۷</span><span class="label">کلاس</span></div>
-        </div>
-        <div class="content">
-            <div class="column">
-                <div class="card">
-                    <h3>چرا XGBoost برنده شد؟</h3>
-                    <ul>
-                        <li><strong>منظم‌سازی:</strong> جلوگیری از overfitting</li>
-                        <li><strong>تقویت گرادیان:</strong> اصلاح خطاها</li>
-                        <li><strong>مدیریت مقادیر گمشده:</strong> خودکار</li>
-                        <li><strong>اهمیت ویژگی:</strong> داخلی</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/confusion_matrix.png" alt="ماتریس سردرگمی">
-            </div>
-        </div>
-        <span class="slide-number">۵ / ۱۰</span>
-    </div>
-
-    <div class="slide">
-        <h2>🔍 اهمیت ویژگی‌ها</h2>
-        <div class="content">
-            <div class="column" style="flex: 0.5;">
-                <div class="card">
-                    <h3>۵ ویژگی برتر</h3>
-                    <ol>
-                        <li><span class="highlight">LogOfAreas</span> (۷.۳٪)</li>
-                        <li>Length_of_Conveyer (۶.۱٪)</li>
-                        <li>Pixels_Areas (۵.۷٪)</li>
-                        <li>Log_X_Index (۵.۰٪)</li>
-                        <li>Outside_X_Index (۴.۷٪)</li>
-                    </ol>
-                </div>
-                <div class="card">
-                    <h3>تفسیر</h3>
-                    <p>ویژگی‌های هندسی (مساحت، موقعیت) برای طبقه‌بندی عیب تمایزگرترین هستند.</p>
-                </div>
-            </div>
-            <div class="image-container">
-                <img src="../figures/feature_importance.png" alt="اهمیت ویژگی‌ها">
-            </div>
-        </div>
-        <span class="slide-number">۶ / ۱۰</span>
-    </div>
-
-    <div class="slide">
-        <h2>🔑 یافته‌های کلیدی</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card"><h3>۱. بهترین مدل</h3><p><span class="highlight">XGBoost</span> با دقت ۸۰.۲٪ و ROC-AUC ۹۴.۴٪</p></div>
-                <div class="card"><h3>۲. برتری ترکیبی</h3><p>ترکیب‌های مبتنی بر درخت از مدل‌های تکی بهتر عمل می‌کنند</p></div>
-                <div class="card"><h3>۳. اهمیت ویژگی</h3><p>ویژگی‌های هندسی تمایزگرترین هستند</p></div>
-            </div>
-            <div class="column">
-                <div class="card"><h3>۴. تغییرپذیری کلاس</h3><p>عیوب خراش آسان؛ خمیری چالش‌برانگیز</p></div>
-                <div class="card"><h3>۵. آمادگی صنعتی</h3><p>دقت ۸۰٪ برای تصمیم‌گیری به کمک انسان مناسب است</p></div>
-            </div>
-        </div>
-        <span class="slide-number">۷ / ۱۰</span>
-    </div>
-
-    <div class="slide">
-        <h2>💡 پیشنهادات</h2>
-        <div class="content">
-            <div class="column">
-                <div class="card"><h3>استقرار</h3><ul><li>استقرار XGBoost با <span class="highlight">نظارت انسانی</span></li><li>پیاده‌سازی آستانه‌های اطمینان</li><li>راه‌اندازی پایش بلادرنگ</li></ul></div>
-                <div class="card"><h3>بهبود</h3><ul><li>جمع‌آوری نمونه‌های بیشتر <span class="highlight">خمیری</span></li><li>استفاده از SMOTE برای عدم توازن کلاس</li><li>در نظر گرفتن یادگیری حساس به هزینه</li></ul></div>
-            </div>
-            <div class="column">
-                <div class="card"><h3>کارهای آینده</h3><ul><li>یادگیری عمیق (CNN) برای تحلیل تصویر</li><li>API پیش‌بینی بلادرنگ</li><li>هوش مصنوعی قابل توضیح (مقادیر SHAP)</li><li>پایش و بازآموزی مدل</li></ul></div>
-            </div>
-        </div>
-        <span class="slide-number">۸ / ۱۰</span>
-    </div>
-
-    <div class="slide title-slide">
-        <h1>با تشکر!</h1>
-        <p class="subtitle">سؤالات؟</p>
-        <div class="badge">پروژه یادگیری ماشین - آذر ۱۴۰۳</div>
-        <span class="slide-number">۱۰ / ۱۰</span>
-    </div>
-
-    <div class="controls">
-        <button onclick="prevSlide()">قبلی ◀</button>
-        <button onclick="nextSlide()">▶ بعدی</button>
-    </div>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); });
-    </script>
+    <section class="slide slide-end">
+        <span class="emoji-large">🙏</span>
+        <h1>متشکرم!</h1>
+        <span class="slide-number">4</span>
+    </section>
 </body>
 </html>
-

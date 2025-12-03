@@ -39,7 +39,7 @@ def perform_tsne(X, n_components=2, perplexity=30):
     print(f"Performing t-SNE (perplexity={perplexity})...")
     
     tsne = TSNE(n_components=n_components, perplexity=perplexity, 
-                random_state=42, n_iter=1000)
+                random_state=42, max_iter=1000)
     X_tsne = tsne.fit_transform(X)
     
     print("t-SNE completed!")

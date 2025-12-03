@@ -1,0 +1,15 @@
+Best Model: XGBoost
+============================================================
+              precision    recall  f1-score   support
+
+       Bumps       0.76      0.67      0.71        81
+   Dirtiness       0.90      0.82      0.86        11
+   K_Scratch       0.99      0.94      0.96        78
+Other_Faults       0.72      0.81      0.77       135
+      Pastry       0.55      0.56      0.55        32
+      Stains       0.92      0.86      0.89        14
+   Z_Scratch       1.00      0.95      0.97        38
+
+    accuracy                           0.80       389
+   macro avg       0.83      0.80      0.82       389
+weighted avg       0.81      0.80      0.80       389
